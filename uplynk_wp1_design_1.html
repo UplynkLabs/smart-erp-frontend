@@ -1,0 +1,2258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uplynk ERP — Work Package 1: Product Design Foundation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0E0F0D;
+    --surface: #141510;
+    --surface-2: #1C1D17;
+    --surface-3: #23241C;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.13);
+    --text: #F5F5F0;
+    --text-2: #9B9E8E;
+    --text-3: #5A5D4E;
+    --accent: #E8D44D;
+    --accent-2: #F0DF72;
+    --accent-dark: #B8A824;
+    --accent-glow: rgba(232,212,77,0.12);
+    --green: #5EC269;
+    --green-bg: rgba(94,194,105,0.1);
+    --amber: #F5A623;
+    --amber-bg: rgba(245,166,35,0.1);
+    --red: #E85C5C;
+    --red-bg: rgba(232,92,92,0.1);
+    --blue: #6BBFCC;
+    --blue-bg: rgba(107,191,204,0.1);
+    --sans: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --sidebar-w: 220px;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans);
+    font-weight: 700; font-size: 14px; color: #0E0F0D;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text {
+    font-family: var(--sans);
+    font-weight: 600; font-size: 15px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .logo-sub {
+    font-size: 10px; color: var(--text-3);
+    font-family: var(--body);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-top: 1px;
+  }
+
+  .sidebar-section {
+    padding: 14px 10px 6px;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text-2);
+    font-size: 13px;
+    font-weight: 450;
+    margin-bottom: 1px;
+    text-decoration: none;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+
+  .nav-item:hover { background: var(--surface-2); color: var(--text); }
+
+  .nav-item.active {
+    background: var(--accent-glow);
+    color: var(--accent-2);
+    font-weight: 500;
+  }
+
+  .nav-icon {
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--accent-glow);
+    color: var(--accent-2);
+    border-radius: 20px;
+    padding: 1px 7px;
+  }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding: 12px 10px;
+  }
+
+  .user-row {
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .user-row:hover { background: var(--surface-2); }
+
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .user-info .name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .user-info .role { font-size: 10px; color: var(--text-3); }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    height: 56px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 28px;
+    gap: 16px;
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 50;
+  }
+
+  .topbar-breadcrumb {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  .topbar-breadcrumb .current {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .topbar-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .branch-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    padding: 5px 12px 5px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .branch-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+  }
+
+  .icon-btn {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text-2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+
+  .notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    border: 1.5px solid var(--bg);
+  }
+
+  /* ── PAGE CONTENT ── */
+  .page {
+    padding: 28px 32px;
+    flex: 1;
+  }
+
+  /* Section tabs */
+  .section-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+    margin-bottom: 28px;
+    width: fit-content;
+  }
+
+  .tab {
+    padding: 7px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none; background: none;
+  }
+  .tab:hover { color: var(--text-2); }
+  .tab.active {
+    background: var(--surface-3);
+    color: var(--text);
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .page-title {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .page-sub {
+    font-size: 13px; color: var(--text-3);
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #5558E8; }
+
+  .btn-secondary {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text-2);
+  }
+  .btn-secondary:hover { background: var(--surface-3); color: var(--text); }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .kpi-value {
+    font-family: var(--sans);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .kpi-change {
+    font-size: 12px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .kpi-change.up { color: var(--green); }
+  .kpi-change.down { color: var(--red); }
+
+  /* ── CONTENT GRID ── */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .panel-body { padding: 0; }
+
+  /* ── CHART BARS ── */
+  .chart-wrap {
+    padding: 20px 20px 0;
+  }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 140px;
+  }
+
+  .bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar {
+    width: 100%;
+    background: var(--accent);
+    border-radius: 4px 4px 0 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    min-height: 4px;
+  }
+  .bar:hover { opacity: 1; }
+  .bar.alt { background: var(--surface-3); opacity: 1; }
+
+  .bar-label {
+    font-size: 10px;
+    color: var(--text-3);
+    padding-bottom: 8px;
+  }
+
+  .chart-axis {
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    padding: 10px 0;
+    display: flex; justify-content: space-between;
+  }
+
+  .axis-label { font-size: 10px; color: var(--text-3); }
+
+  /* ── ORDER LIST ── */
+  .order-list { }
+
+  .order-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .order-item:last-child { border-bottom: none; }
+  .order-item:hover { background: var(--surface-2); }
+
+  .order-num {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 60px;
+  }
+
+  .order-info { flex: 1; }
+  .order-name { font-size: 13px; color: var(--text); font-weight: 450; }
+  .order-time { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+  .order-amount {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .status-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .status-pill.paid { background: var(--green-bg); color: var(--green); }
+  .status-pill.pending { background: var(--amber-bg); color: var(--amber); }
+  .status-pill.prep { background: var(--blue-bg); color: var(--blue); }
+
+  /* ── QUICK ACTIONS ── */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .qa-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .qa-btn:hover { background: var(--surface-3); border-color: var(--border-strong); }
+
+  .qa-icon {
+    width: 34px; height: 34px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .qa-text .qa-title { font-size: 12px; font-weight: 500; color: var(--text); }
+  .qa-text .qa-sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+  /* ── ALERT PANEL ── */
+  .alert-list { }
+
+  .alert-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .alert-item:last-child { border-bottom: none; }
+
+  .alert-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 4px; flex-shrink: 0;
+  }
+
+  .alert-msg { font-size: 13px; color: var(--text); }
+  .alert-time { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  /* ── INVENTORY TABLE ── */
+  .inv-table {
+    width: 100%; border-collapse: collapse;
+  }
+
+  .inv-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .inv-table td {
+    padding: 13px 20px;
+    font-size: 13px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .inv-table tr:last-child td { border-bottom: none; }
+  .inv-table tr:hover td { background: var(--surface-2); }
+
+  .stock-bar-wrap {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .stock-bar-bg {
+    flex: 1; height: 5px;
+    background: var(--surface-3);
+    border-radius: 10px; overflow: hidden;
+  }
+
+  .stock-bar-fill {
+    height: 100%; border-radius: 10px;
+    transition: width 0.3s;
+  }
+
+  .stock-qty { font-size: 12px; font-weight: 500; min-width: 40px; text-align: right; }
+
+  /* ── KOT CARDS ── */
+  .kot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .kot-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .kot-header {
+    padding: 10px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .kot-num {
+    font-family: var(--sans);
+    font-size: 14px; font-weight: 700;
+    color: var(--text);
+  }
+
+  .kot-timer {
+    font-size: 11px; color: var(--amber); font-weight: 500;
+    background: var(--amber-bg);
+    padding: 2px 7px; border-radius: 10px;
+  }
+
+  .kot-timer.urgent { color: var(--red); background: var(--red-bg); }
+
+  .kot-items { padding: 10px 14px; }
+
+  .kot-item-row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--text-2);
+    padding: 3px 0;
+  }
+
+  .kot-item-qty {
+    font-weight: 600;
+    color: var(--text);
+    margin-right: 6px;
+  }
+
+  .kot-footer {
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 6px;
+  }
+
+  .kot-btn {
+    flex: 1;
+    padding: 6px 0;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .kot-btn.prep { background: var(--blue-bg); color: var(--blue); }
+  .kot-btn.done { background: var(--green-bg); color: var(--green); }
+  .kot-btn.prep:hover { background: var(--blue); color: #fff; }
+  .kot-btn.done:hover { background: var(--green); color: #fff; }
+
+  /* ── POS LAYOUT ── */
+  .pos-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+  }
+
+  .pos-menu {
+    overflow-y: auto;
+    padding: 20px 24px;
+    background: var(--bg);
+  }
+
+  .pos-cart {
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  .pos-cats {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .cat-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+  }
+  .cat-pill:hover { color: var(--text); border-color: var(--border-strong); }
+  .cat-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .menu-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .menu-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .menu-item:active { transform: scale(0.97); }
+
+  .menu-item-emoji { font-size: 28px; margin-bottom: 10px; }
+  .menu-item-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .menu-item-price { font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--accent-2); }
+
+  .cart-header {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--sans);
+    font-size: 14px; font-weight: 600; color: var(--text);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .cart-items {
+    flex: 1; overflow-y: auto;
+    padding: 10px 0;
+  }
+
+  .cart-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 18px;
+  }
+
+  .cart-item-name { flex: 1; font-size: 13px; color: var(--text); }
+  .cart-qty-ctrl {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .qty-btn {
+    width: 22px; height: 22px;
+    border-radius: 50%; border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; font-weight: 500;
+    line-height: 1;
+  }
+  .qty-num { font-size: 13px; font-weight: 600; color: var(--text); min-width: 16px; text-align: center; }
+  .cart-item-price { font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--text); min-width: 55px; text-align: right; }
+
+  .cart-footer {
+    border-top: 1px solid var(--border);
+    padding: 14px 18px;
+  }
+
+  .cart-totals { margin-bottom: 14px; }
+  .cart-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--text-2);
+    padding: 3px 0;
+  }
+  .cart-row.total { color: var(--text); font-weight: 600; font-size: 15px; padding-top: 8px; border-top: 1px solid var(--border); margin-top: 6px; }
+
+  .pay-methods { display: flex; gap: 6px; margin-bottom: 12px; }
+  .pay-btn {
+    flex: 1; padding: 8px 0;
+    border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--text-2);
+    transition: all 0.15s; text-align: center;
+  }
+  .pay-btn:hover { background: var(--surface-3); color: var(--text); }
+  .pay-btn.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent-2); }
+
+  .charge-btn {
+    width: 100%; padding: 13px;
+    background: var(--accent);
+    color: #fff;
+    border: none; border-radius: var(--radius-sm);
+    font-family: var(--sans);
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+    letter-spacing: -0.2px;
+  }
+  .charge-btn:hover { background: #5558E8; }
+
+  /* ── SCREEN SECTIONS ── */
+  .screen-section { display: none; }
+  .screen-section.active { display: block; }
+
+  .pos-section { display: none; }
+  .pos-section.active { display: flex; flex-direction: column; flex: 1; }
+
+  /* ── SETTINGS ── */
+  .settings-layout {
+    display: grid; grid-template-columns: 200px 1fr; gap: 0;
+  }
+
+  .settings-nav {
+    border-right: 1px solid var(--border);
+    padding: 16px 10px;
+  }
+
+  .settings-nav-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 13px; color: var(--text-2);
+    cursor: pointer; margin-bottom: 1px;
+    transition: all 0.15s;
+  }
+  .settings-nav-item:hover { background: var(--surface-2); color: var(--text); }
+  .settings-nav-item.active { background: var(--surface-2); color: var(--text); }
+
+  .settings-content {
+    padding: 24px 28px;
+  }
+
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-size: 12px; font-weight: 500; color: var(--text-2);
+    margin-bottom: 7px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 9px 13px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--body);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color: var(--text-3); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+  }
+
+  .toggle-info .toggle-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .toggle-info .toggle-desc { font-size: 12px; color: var(--text-3); }
+
+  .toggle-switch {
+    width: 36px; height: 20px;
+    background: var(--accent);
+    border-radius: 10px;
+    position: relative; cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-switch.off { background: var(--surface-3); }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 18px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.2s;
+  }
+  .toggle-switch.off::after { left: 2px; }
+
+  .divider-line {
+    border: none; border-top: 1px solid var(--border);
+    margin: 22px 0;
+  }
+
+  .settings-section-title {
+    font-family: var(--sans);
+    font-size: 15px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  /* Reports */
+  .report-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-bottom: 20px;
+  }
+
+  .report-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .report-card:hover { border-color: var(--border-strong); }
+
+  .report-icon {
+    font-size: 22px; margin-bottom: 12px;
+  }
+
+  .report-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .report-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+  .report-meta { margin-top: 12px; font-size: 11px; color: var(--text-3); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
+
+  /* ── EMPTY / MISC ── */
+  .text-muted { color: var(--text-3); }
+  .text-accent { color: var(--accent-2); }
+  .font-mono { font-family: 'SF Mono', monospace; }
+
+  /* ── GLOBAL SEARCH ── */
+  .global-search {
+    flex: 1; max-width: 400px;
+    position: relative;
+    margin: 0 20px;
+  }
+  .global-search input {
+    width: 100%;
+    padding: 8px 14px 8px 36px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--body);
+    outline: none;
+    transition: all 0.2s;
+  }
+  .global-search input:focus { border-color: var(--accent); background: var(--surface); }
+  .global-search input::placeholder { color: var(--text-3); }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--text-3);
+  }
+
+  /* ── DROPDOWNS & POPOVERS ── */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .dropdown-menu {
+    position: absolute;
+    top: 100%; right: 0;
+    margin-top: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 1000;
+    opacity: 0; visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s;
+  }
+  .dropdown.active .dropdown-menu {
+    opacity: 1; visibility: visible;
+    transform: translateY(0);
+  }
+  .dropdown-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-2);
+  }
+  .dropdown-item {
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .dropdown-item:hover { background: var(--surface-2); }
+  .dropdown-item.danger { color: var(--red); }
+  .dropdown-item.danger:hover { background: var(--red-bg); }
+  .dropdown-divider { border-top: 1px solid var(--border); margin: 4px 0; }
+
+  /* ── NOTIFICATION DRAWER ── */
+  .notif-drawer {
+    position: fixed; top: 0; right: -400px;
+    width: 380px; height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 2000;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+  }
+  .notif-drawer.open { right: 0; }
+  .notif-header {
+    padding: 20px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .notif-title { font-family: var(--sans); font-size: 18px; font-weight: 600; }
+  .notif-close { cursor: pointer; color: var(--text-2); }
+  .notif-close:hover { color: var(--text); }
+  .notif-tabs { display: flex; gap: 16px; padding: 0 20px; border-bottom: 1px solid var(--border); }
+  .notif-tab { padding: 12px 0; font-size: 13px; color: var(--text-3); cursor: pointer; border-bottom: 2px solid transparent; }
+  .notif-tab.active { color: var(--accent-2); border-color: var(--accent); }
+  .notif-body { flex: 1; overflow-y: auto; padding: 10px 0; }
+  .notif-item { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; cursor: pointer; transition: background 0.15s; }
+  .notif-item:hover { background: var(--surface-2); }
+  .notif-item.unread { background: var(--surface-3); }
+  .notif-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* ── SKELETON LOADERS ── */
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: var(--radius-sm);
+  }
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .skel-text { height: 14px; margin-bottom: 8px; width: 100%; }
+  .skel-text.short { width: 60%; }
+  .skel-title { height: 24px; width: 40%; margin-bottom: 16px; }
+  .skel-kpi { height: 100px; }
+  .skel-chart { height: 200px; }
+  .skel-table-row { height: 48px; margin-bottom: 1px; border-radius: 0; }
+
+  /* ── EMPTY & ERROR STATES ── */
+  .state-container {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 60px 20px; height: 100%; min-height: 400px;
+  }
+  .state-icon { font-size: 48px; margin-bottom: 20px; opacity: 0.8; }
+  .state-title { font-family: var(--sans); font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .state-desc { font-size: 14px; color: var(--text-2); max-width: 400px; margin-bottom: 24px; }
+  
+  /* ── DEMO CONTROLS ── */
+  .demo-controls {
+    position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+    background: rgba(20,21,16,0.9); backdrop-filter: blur(10px);
+    border: 1px solid var(--accent); border-radius: var(--radius);
+    padding: 16px; width: 280px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    transform: translateY(calc(100% - 44px)); transition: transform 0.3s;
+  }
+  .demo-controls:hover, .demo-controls.pinned { transform: translateY(0); }
+  .demo-header { font-size: 12px; font-weight: 600; color: var(--accent-2); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; cursor: pointer; }
+  .demo-section { margin-bottom: 12px; }
+  .demo-label { font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
+  .demo-select { width: 100%; padding: 6px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 12px; border-radius: 4px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">U</div>
+    <div>
+      <div class="logo-text">Uplynk ERP</div>
+      <div class="logo-sub">Restaurant Cloud Platform</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Sales & Customers</div>
+    <button class="nav-item active" onclick="showScreen('dashboard')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="showScreen('pos')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 15h2m4 0h2"/></svg></span>
+      Point of Sale
+      <span class="nav-badge">3</span>
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+      Customers
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+      Reservations
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Operations</div>
+    <button class="nav-item" onclick="showScreen('kitchen')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2v6a6 6 0 0012 0V2"/><path d="M6 8h12M12 14v7m-3 0h6"/></svg></span>
+      Kitchen
+      <span class="nav-badge">7</span>
+    </button>
+    <button class="nav-item" onclick="showScreen('inventory')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      Inventory
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+      Menu Management
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></span>
+      Table Management
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Supply & Finance</div>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></span>
+      Suppliers
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></span>
+      Purchases
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>
+      Expenses
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg></span>
+      Accounting
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">HR</div>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+      Employees
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      Attendance
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/><path d="M2 13h4v4m0 0v4m0-4h4"/></svg></span>
+      Payroll
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">System & Admin</div>
+    <button class="nav-item" onclick="showScreen('reports')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>
+      Reports
+    </button>
+    <button class="nav-item" onclick="showScreen('settings')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
+      Settings
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
+      Notifications
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+      Audit Logs
+    </button>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="dropdown" style="width: 100%;">
+      <div class="user-row" onclick="this.parentElement.classList.toggle('active')">
+        <div class="avatar">AH</div>
+        <div class="user-info">
+          <div class="name" id="current-user-name">Admin User</div>
+          <div class="role" id="current-user-role">Super Admin</div>
+        </div>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="color:var(--text-3);margin-left:auto"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="dropdown-menu" style="bottom: 100%; top: auto; margin-bottom: 8px;">
+        <div class="dropdown-header">User Profile</div>
+        <div class="dropdown-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> View Profile</div>
+        <div class="dropdown-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Settings</div>
+        <div class="dropdown-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg> Language</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-breadcrumb">
+      <span>Uplynk ERP</span>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="current" id="topbar-title">Dashboard</span>
+    </div>
+
+    <!-- Global Search -->
+    <div class="global-search">
+      <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search customers, orders, products...">
+    </div>
+
+    <div class="topbar-right">
+      <!-- Multi-Tenant Switcher -->
+      <div class="dropdown">
+        <div class="branch-pill" onclick="this.parentElement.classList.toggle('active')">
+          <div class="branch-dot"></div>
+          Main Branch
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-header">The Burger House</div>
+          <div class="dropdown-item"><div class="branch-dot"></div> Main Branch</div>
+          <div class="dropdown-item"><div class="branch-dot" style="background:var(--surface-3)"></div> Downtown Branch</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Add Branch</div>
+        </div>
+      </div>
+      
+      <!-- Notification Toggle -->
+      <div class="icon-btn" onclick="document.getElementById('notifDrawer').classList.add('open')">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NOTIFICATION DRAWER -->
+  <div class="notif-drawer" id="notifDrawer">
+    <div class="notif-header">
+      <div class="notif-title">Notifications</div>
+      <div class="notif-close" onclick="document.getElementById('notifDrawer').classList.remove('open')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <div class="notif-tabs">
+      <div class="notif-tab active">All</div>
+      <div class="notif-tab">Unread (2)</div>
+      <div class="notif-tab">Alerts</div>
+      <div class="notif-tab">System</div>
+    </div>
+    <div class="notif-body">
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:var(--red-bg);color:var(--red)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Critical Stock Alert</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:2px">Chicken breast is below minimum stock (2kg left).</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">5 min ago</div>
+        </div>
+      </div>
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:var(--blue-bg);color:var(--blue)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Shift Started</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:2px">Sarah (Cashier) started her shift.</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">15 min ago</div>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon" style="background:var(--green-bg);color:var(--green)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Daily Goal Reached</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:2px">Main Branch has reached its daily revenue goal!</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">2 hrs ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ DASHBOARD ══════ -->
+  <div class="screen-section active" id="screen-dashboard">
+    <div class="page">
+      <div class="page-header" style="align-items: center;">
+        <div>
+          <div class="page-title">Owner Dashboard ☀️</div>
+          <div class="page-sub">Here's what's happening at Main Branch today — Sunday, 13 July 2026</div>
+        </div>
+        
+        <div class="section-tabs" style="margin-bottom:0">
+          <button class="tab active">Today</button>
+          <button class="tab">Week</button>
+          <button class="tab">Month</button>
+          <button class="tab">Custom Date <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            Refresh
+          </button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 15 21 21 3 21 3 15"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export
+          </button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Today's Sales
+          </div>
+          <div class="kpi-value">PKR 84,200</div>
+          <div class="kpi-change up">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            +12% vs yesterday
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            Orders Today
+          </div>
+          <div class="kpi-value">147</div>
+          <div class="kpi-change up">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            +8% vs yesterday
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Avg. Order Value
+          </div>
+          <div class="kpi-value">PKR 573</div>
+          <div class="kpi-change down">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+            −3% vs yesterday
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+            Low Stock Alerts
+          </div>
+          <div class="kpi-value" style="color:var(--amber)">4</div>
+          <div class="kpi-change" style="color:var(--amber)">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Action required
+          </div>
+        </div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="content-grid">
+        <!-- Sales chart -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Sales this week</div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px">Week</button>
+              <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px;background:var(--surface-3);color:var(--text)">Month</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="chart-wrap">
+              <div class="chart-bars">
+                <div class="bar-group"><div class="bar" style="height:55%"></div><div class="bar-label">Mon</div></div>
+                <div class="bar-group"><div class="bar" style="height:70%"></div><div class="bar-label">Tue</div></div>
+                <div class="bar-group"><div class="bar" style="height:45%"></div><div class="bar-label">Wed</div></div>
+                <div class="bar-group"><div class="bar" style="height:80%"></div><div class="bar-label">Thu</div></div>
+                <div class="bar-group"><div class="bar" style="height:90%"></div><div class="bar-label">Fri</div></div>
+                <div class="bar-group"><div class="bar" style="height:100%"></div><div class="bar-label">Sat</div></div>
+                <div class="bar-group"><div class="bar alt" style="height:60%"></div><div class="bar-label">Sun</div></div>
+              </div>
+              <div class="chart-axis">
+                <span class="axis-label">PKR 0</span>
+                <span class="axis-label">PKR 40K</span>
+                <span class="axis-label">PKR 80K</span>
+              </div>
+            </div>
+            <div style="padding:0 20px 4px">
+              <div class="panel-header" style="padding:14px 0;border-bottom:none;border-top:1px solid var(--border)">
+                <div class="panel-title" style="font-size:13px">Recent orders</div>
+                <span style="font-size:12px;color:var(--accent-2);cursor:pointer">View all →</span>
+              </div>
+            </div>
+            <div class="order-list">
+              <div class="order-item">
+                <div class="order-num">#1047</div>
+                <div class="order-info">
+                  <div class="order-name">Chicken Burger Meal × 2</div>
+                  <div class="order-time">2 min ago · Table 4</div>
+                </div>
+                <div class="order-amount">PKR 1,200</div>
+                <span class="status-pill prep">In prep</span>
+              </div>
+              <div class="order-item">
+                <div class="order-num">#1046</div>
+                <div class="order-info">
+                  <div class="order-name">Zinger + Fries + Drink</div>
+                  <div class="order-time">9 min ago · Counter</div>
+                </div>
+                <div class="order-amount">PKR 680</div>
+                <span class="status-pill paid">Paid</span>
+              </div>
+              <div class="order-item">
+                <div class="order-num">#1045</div>
+                <div class="order-info">
+                  <div class="order-name">Pizza Margherita (L)</div>
+                  <div class="order-time">14 min ago · Table 7</div>
+                </div>
+                <div class="order-amount">PKR 950</div>
+                <span class="status-pill paid">Paid</span>
+              </div>
+              <div class="order-item">
+                <div class="order-num">#1044</div>
+                <div class="order-info">
+                  <div class="order-name">Latte × 3 + Brownie</div>
+                  <div class="order-time">21 min ago · Takeaway</div>
+                </div>
+                <div class="order-amount">PKR 820</div>
+                <span class="status-pill pending">Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <!-- Quick actions -->
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Quick actions</div></div>
+            <div class="quick-actions">
+              <div class="qa-btn" onclick="showScreen('pos')">
+                <div class="qa-icon" style="background:var(--accent-glow)">
+                  <svg width="17" height="17" fill="none" stroke="var(--accent-2)" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                </div>
+                <div class="qa-text"><div class="qa-title">New sale</div><div class="qa-sub">Open POS</div></div>
+              </div>
+              <div class="qa-btn">
+                <div class="qa-icon" style="background:var(--green-bg)">
+                  <svg width="17" height="17" fill="none" stroke="var(--green)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16V8z"/></svg>
+                </div>
+                <div class="qa-text"><div class="qa-title">Add stock</div><div class="qa-sub">Inventory</div></div>
+              </div>
+              <div class="qa-btn">
+                <div class="qa-icon" style="background:var(--amber-bg)">
+                  <svg width="17" height="17" fill="none" stroke="var(--amber)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                </div>
+                <div class="qa-text"><div class="qa-title">Staff</div><div class="qa-sub">Employees</div></div>
+              </div>
+              <div class="qa-btn" onclick="showScreen('reports')">
+                <div class="qa-icon" style="background:var(--blue-bg)">
+                  <svg width="17" height="17" fill="none" stroke="var(--blue)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                </div>
+                <div class="qa-text"><div class="qa-title">Reports</div><div class="qa-sub">Analytics</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts -->
+          <div class="panel" style="flex:1">
+            <div class="panel-header">
+              <div class="panel-title">Alerts</div>
+              <span class="status-pill pending">4 new</span>
+            </div>
+            <div class="alert-list">
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--red)"></div>
+                <div>
+                  <div class="alert-msg">Chicken breast below minimum stock (2kg left)</div>
+                  <div class="alert-time">5 min ago</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--amber)"></div>
+                <div>
+                  <div class="alert-msg">Supplier payment due — Al-Barakah Foods</div>
+                  <div class="alert-time">1 hr ago</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--amber)"></div>
+                <div>
+                  <div class="alert-msg">Mozzarella running low (500g remaining)</div>
+                  <div class="alert-time">2 hrs ago</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--blue)"></div>
+                <div>
+                  <div class="alert-msg">July payroll processing due in 3 days</div>
+                  <div class="alert-time">Today</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ MANAGER DASHBOARD (SKELETON) ══════ -->
+  <div class="screen-section" id="screen-dashboard-manager">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Manager Dashboard</div>
+          <div class="page-sub">Loading operational metrics...</div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+      </div>
+      <div class="content-grid">
+        <div class="panel">
+          <div class="panel-header"><div class="skel-title skeleton" style="margin:0"></div></div>
+          <div class="panel-body" style="padding:20px"><div class="skeleton skel-chart"></div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="panel">
+            <div class="panel-header"><div class="skel-title skeleton" style="margin:0"></div></div>
+            <div class="panel-body" style="padding:20px">
+              <div class="skeleton skel-text"></div>
+              <div class="skeleton skel-text"></div>
+              <div class="skeleton skel-text short"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ CASHIER DASHBOARD (SKELETON) ══════ -->
+  <div class="screen-section" id="screen-dashboard-cashier">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Cashier Dashboard</div>
+          <div class="page-sub">Loading shift details...</div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ KITCHEN STAFF DASHBOARD (SKELETON) ══════ -->
+  <div class="screen-section" id="screen-dashboard-kitchen">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Kitchen Staff Dashboard</div>
+          <div class="page-sub">Loading prep times and order queue...</div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="skel-title skeleton" style="margin:0;width:20%"></div></div>
+        <div class="panel-body" style="padding:20px">
+          <div class="skeleton skel-table-row"></div>
+          <div class="skeleton skel-table-row"></div>
+          <div class="skeleton skel-table-row"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ POS ══════ -->
+  <div class="screen-section" id="screen-pos">
+    <div class="pos-layout">
+      <div class="pos-menu">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-family:var(--sans);font-size:18px;font-weight:600;color:var(--text)">Point of Sale</div>
+            <div style="font-size:12px;color:var(--text-3)">Main Branch · Table / Counter</div>
+          </div>
+          <div class="branch-pill" style="font-size:11px"><div class="branch-dot"></div>Cashier: Sarah</div>
+        </div>
+        <div class="pos-cats">
+          <div class="cat-pill active">All items</div>
+          <div class="cat-pill">🍔 Burgers</div>
+          <div class="cat-pill">🍕 Pizza</div>
+          <div class="cat-pill">🍗 Chicken</div>
+          <div class="cat-pill">🥤 Drinks</div>
+          <div class="cat-pill">🍰 Desserts</div>
+          <div class="cat-pill">🥗 Sides</div>
+        </div>
+        <div class="menu-grid">
+          <div class="menu-item"><div class="menu-item-emoji">🍔</div><div class="menu-item-name">Chicken Burger</div><div class="menu-item-price">PKR 480</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍕</div><div class="menu-item-name">Margherita Pizza</div><div class="menu-item-price">PKR 950</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍗</div><div class="menu-item-name">Zinger Meal</div><div class="menu-item-price">PKR 620</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🥤</div><div class="menu-item-name">Pepsi 500ml</div><div class="menu-item-price">PKR 120</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍟</div><div class="menu-item-name">Fries (Large)</div><div class="menu-item-price">PKR 250</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍰</div><div class="menu-item-name">Brownie</div><div class="menu-item-price">PKR 320</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">☕</div><div class="menu-item-name">Latte</div><div class="menu-item-price">PKR 380</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🥗</div><div class="menu-item-name">Caesar Salad</div><div class="menu-item-price">PKR 550</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍱</div><div class="menu-item-name">Combo Meal A</div><div class="menu-item-price">PKR 850</div></div>
+        </div>
+      </div>
+
+      <!-- Cart -->
+      <div class="pos-cart">
+        <div class="cart-header">
+          Order #1048
+          <span style="font-size:12px;font-weight:400;color:var(--text-3)">Table 3</span>
+        </div>
+        <div class="cart-items">
+          <div class="cart-item">
+            <div class="cart-item-name">Chicken Burger</div>
+            <div class="cart-qty-ctrl">
+              <div class="qty-btn">−</div>
+              <div class="qty-num">2</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="cart-item-price">PKR 960</div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-name">Fries (Large)</div>
+            <div class="cart-qty-ctrl">
+              <div class="qty-btn">−</div>
+              <div class="qty-num">1</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="cart-item-price">PKR 250</div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-name">Pepsi 500ml</div>
+            <div class="cart-qty-ctrl">
+              <div class="qty-btn">−</div>
+              <div class="qty-num">2</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="cart-item-price">PKR 240</div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-name">Brownie</div>
+            <div class="cart-qty-ctrl">
+              <div class="qty-btn">−</div>
+              <div class="qty-num">1</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="cart-item-price">PKR 320</div>
+          </div>
+        </div>
+        <div class="cart-footer">
+          <div class="cart-totals">
+            <div class="cart-row"><span>Subtotal</span><span>PKR 1,770</span></div>
+            <div class="cart-row"><span>Tax (17%)</span><span>PKR 300</span></div>
+            <div class="cart-row"><span>Discount</span><span style="color:var(--green)">−PKR 0</span></div>
+            <div class="cart-row total"><span>Total</span><span>PKR 2,070</span></div>
+          </div>
+          <div class="pay-methods">
+            <div class="pay-btn active">Cash</div>
+            <div class="pay-btn">Card</div>
+            <div class="pay-btn">JazzCash</div>
+          </div>
+          <button class="charge-btn">Charge PKR 2,070</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ KITCHEN ══════ -->
+  <div class="screen-section" id="screen-kitchen">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Kitchen Display</div>
+          <div class="page-sub">7 active orders · Main Branch kitchen</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>
+            Kitchen online
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <span class="status-pill prep" style="font-size:12px;padding:5px 12px">New (3)</span>
+        <span class="status-pill pending" style="font-size:12px;padding:5px 12px">In prep (3)</span>
+        <span class="status-pill paid" style="font-size:12px;padding:5px 12px">Ready (1)</span>
+      </div>
+
+      <div class="kot-grid">
+        <div class="kot-card">
+          <div class="kot-header">
+            <div class="kot-num">#1048</div>
+            <div class="kot-timer urgent">12:34</div>
+          </div>
+          <div class="kot-items">
+            <div class="kot-item-row"><span><span class="kot-item-qty">×2</span>Chicken Burger</span><span style="color:var(--text-3);font-size:11px">No pickles</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Fries (Large)</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Brownie</span></div>
+          </div>
+          <div class="kot-footer">
+            <button class="kot-btn prep">In prep</button>
+            <button class="kot-btn done">Ready</button>
+          </div>
+        </div>
+        <div class="kot-card">
+          <div class="kot-header">
+            <div class="kot-num">#1047</div>
+            <div class="kot-timer">08:12</div>
+          </div>
+          <div class="kot-items">
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Margherita Pizza</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×2</span>Pepsi 500ml</span></div>
+          </div>
+          <div class="kot-footer">
+            <button class="kot-btn prep">In prep</button>
+            <button class="kot-btn done">Ready</button>
+          </div>
+        </div>
+        <div class="kot-card">
+          <div class="kot-header">
+            <div class="kot-num">#1046</div>
+            <div class="kot-timer">05:40</div>
+          </div>
+          <div class="kot-items">
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Zinger Meal</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Caesar Salad</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×3</span>Latte</span><span style="color:var(--text-3);font-size:11px">Extra shot</span></div>
+          </div>
+          <div class="kot-footer">
+            <button class="kot-btn prep">In prep</button>
+            <button class="kot-btn done">Ready</button>
+          </div>
+        </div>
+        <div class="kot-card" style="border-color:var(--green);opacity:0.7">
+          <div class="kot-header">
+            <div class="kot-num">#1045</div>
+            <div class="kot-timer" style="background:var(--green-bg);color:var(--green)">Ready ✓</div>
+          </div>
+          <div class="kot-items">
+            <div class="kot-item-row"><span><span class="kot-item-qty">×2</span>Combo Meal A</span></div>
+          </div>
+          <div class="kot-footer">
+            <button class="kot-btn done" style="flex:1;background:var(--green-bg);color:var(--green)">Served</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ INVENTORY ══════ -->
+  <div class="screen-section" id="screen-inventory">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Inventory</div>
+          <div class="page-sub">32 ingredients tracked · Last updated 2 min ago</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search
+          </button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add item
+          </button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Stock levels</div>
+          <div style="display:flex;gap:6px">
+            <span class="status-pill pending">4 low stock</span>
+            <span class="status-pill paid">28 in stock</span>
+          </div>
+        </div>
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Category</th>
+              <th>Stock level</th>
+              <th>Unit</th>
+              <th>Reorder at</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:500">Chicken Breast</td>
+              <td style="color:var(--text-3)">Protein</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:15%;background:var(--red)"></div></div>
+                  <div class="stock-qty" style="color:var(--red)">2 kg</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">kg</td>
+              <td style="color:var(--text-3)">5 kg</td>
+              <td><span class="status-pill" style="background:var(--red-bg);color:var(--red)">Critical</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Mozzarella Cheese</td>
+              <td style="color:var(--text-3)">Dairy</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:25%;background:var(--amber)"></div></div>
+                  <div class="stock-qty" style="color:var(--amber)">500g</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">g</td>
+              <td style="color:var(--text-3)">1 kg</td>
+              <td><span class="status-pill pending">Low</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Burger Buns</td>
+              <td style="color:var(--text-3)">Bakery</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:75%;background:var(--green)"></div></div>
+                  <div class="stock-qty" style="color:var(--green)">48 pcs</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">pcs</td>
+              <td style="color:var(--text-3)">20 pcs</td>
+              <td><span class="status-pill paid">Good</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Tomato Sauce</td>
+              <td style="color:var(--text-3)">Condiment</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:60%;background:var(--green)"></div></div>
+                  <div class="stock-qty" style="color:var(--green)">3.2 kg</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">kg</td>
+              <td style="color:var(--text-3)">1 kg</td>
+              <td><span class="status-pill paid">Good</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Cooking Oil</td>
+              <td style="color:var(--text-3)">Oil</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:40%;background:var(--accent)"></div></div>
+                  <div class="stock-qty">4 L</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">L</td>
+              <td style="color:var(--text-3)">2 L</td>
+              <td><span class="status-pill paid">Good</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">All-Purpose Flour</td>
+              <td style="color:var(--text-3)">Dry goods</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:85%;background:var(--green)"></div></div>
+                  <div class="stock-qty" style="color:var(--green)">17 kg</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">kg</td>
+              <td style="color:var(--text-3)">5 kg</td>
+              <td><span class="status-pill paid">Good</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ REPORTS ══════ -->
+  <div class="screen-section" id="screen-reports">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Reports & Analytics</div>
+          <div class="page-sub">Business intelligence for Main Branch · July 2026</div>
+        </div>
+        <button class="btn btn-primary">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 15 21 21 3 21 3 15"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export PDF
+        </button>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-icon">📊</div>
+          <div class="report-name">Daily sales report</div>
+          <div class="report-desc">Order volume, revenue, average order value by hour</div>
+          <div class="report-meta">Last generated: Today 8:00 AM</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">📦</div>
+          <div class="report-name">Inventory report</div>
+          <div class="report-desc">Stock levels, consumption rates, wastage tracking</div>
+          <div class="report-meta">Last generated: Yesterday 11:30 PM</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">💰</div>
+          <div class="report-name">Profit & loss</div>
+          <div class="report-desc">Revenue vs costs, gross margin, net profit</div>
+          <div class="report-meta">Last generated: Jul 1, 2026</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">👥</div>
+          <div class="report-name">Payroll report</div>
+          <div class="report-desc">Staff salaries, attendance, deductions</div>
+          <div class="report-meta">Last generated: Jun 30, 2026</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">🚚</div>
+          <div class="report-name">Supplier payments</div>
+          <div class="report-desc">Outstanding balances, payment history, credit terms</div>
+          <div class="report-meta">Last generated: Jul 10, 2026</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">🏪</div>
+          <div class="report-name">Branch comparison</div>
+          <div class="report-desc">Side-by-side performance across all branches</div>
+          <div class="report-meta">Last generated: Jul 7, 2026</div>
+        </div>
+      </div>
+
+      <!-- Summary stats -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">July 2026 at a glance</div></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0">
+          <div style="padding:20px;border-right:1px solid var(--border)">
+            <div class="kpi-label">Total revenue</div>
+            <div class="kpi-value" style="font-size:22px">PKR 24.8L</div>
+            <div class="kpi-change up">+18% vs June</div>
+          </div>
+          <div style="padding:20px;border-right:1px solid var(--border)">
+            <div class="kpi-label">Total orders</div>
+            <div class="kpi-value" style="font-size:22px">1,842</div>
+            <div class="kpi-change up">+11% vs June</div>
+          </div>
+          <div style="padding:20px;border-right:1px solid var(--border)">
+            <div class="kpi-label">Top item</div>
+            <div class="kpi-value" style="font-size:18px">Zinger Meal</div>
+            <div style="font-size:12px;color:var(--text-3)">412 orders</div>
+          </div>
+          <div style="padding:20px">
+            <div class="kpi-label">Staff cost %</div>
+            <div class="kpi-value" style="font-size:22px">28.4%</div>
+            <div class="kpi-change down">+2% vs June</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SETTINGS ══════ -->
+  <div class="screen-section" id="screen-settings">
+    <div class="page" style="padding:0">
+      <div class="settings-layout">
+        <div class="settings-nav">
+          <div class="settings-nav-item active">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Organization
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Users & roles
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Branches
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            POS settings
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.13 12a19.79 19.79 0 01-3-8.59A2 2 0 013.11 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.91 8.09a16 16 0 006 6l.55-.55a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            WhatsApp automation
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Security
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            Billing & plan
+          </div>
+        </div>
+
+        <div class="settings-content">
+          <div class="settings-section-title">Organization settings</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Business name</label>
+              <input class="form-input" type="text" value="The Burger House">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business type</label>
+              <input class="form-input" type="text" value="Restaurant">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email address</label>
+              <input class="form-input" type="email" value="admin@burgerhouse.pk">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone number</label>
+              <input class="form-input" type="text" value="+92 300 1234567">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Business address</label>
+            <input class="form-input" type="text" value="Blue Area, Islamabad, Pakistan">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tax number (NTN)</label>
+              <input class="form-input" type="text" value="1234567-8">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Currency</label>
+              <input class="form-input" type="text" value="PKR — Pakistani Rupee">
+            </div>
+          </div>
+
+          <hr class="divider-line">
+          <div class="settings-section-title">Notifications</div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">WhatsApp daily sales summary</div>
+              <div class="toggle-desc">Receive end-of-day report via WhatsApp</div>
+            </div>
+            <div class="toggle-switch"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">Low stock alerts</div>
+              <div class="toggle-desc">Alert when inventory drops below reorder level</div>
+            </div>
+            <div class="toggle-switch"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">Payroll reminders</div>
+              <div class="toggle-desc">Remind 3 days before salary due date</div>
+            </div>
+            <div class="toggle-switch off"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">Supplier payment reminders</div>
+              <div class="toggle-desc">Alert on outstanding supplier balances</div>
+            </div>
+            <div class="toggle-switch"></div>
+          </div>
+
+          <hr class="divider-line">
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary">Save changes</button>
+            <button class="btn btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ EMPTY STATES ══════ -->
+  <div class="screen-section" id="screen-empty-orders">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">🧾</div>
+        <div class="state-title">No orders yet</div>
+        <div class="state-desc">You haven't received any orders today. When new orders come in, they will appear here.</div>
+        <button class="btn btn-primary" onclick="showScreen('pos')">Go to POS</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-empty-inventory">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">📦</div>
+        <div class="state-title">Inventory is empty</div>
+        <div class="state-desc">Start adding items to your inventory to track stock levels and receive low-stock alerts.</div>
+        <button class="btn btn-primary">Add first item</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-empty-reports">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">📊</div>
+        <div class="state-title">No data to display</div>
+        <div class="state-desc">There is not enough data to generate this report. Try selecting a different date range.</div>
+        <button class="btn btn-secondary">Clear filters</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ ERROR STATES ══════ -->
+  <div class="screen-section" id="screen-error-404">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">🔍</div>
+        <div class="state-title">Page not found (404)</div>
+        <div class="state-desc">The module or record you are looking for does not exist or has been removed.</div>
+        <button class="btn btn-primary" onclick="showScreen('dashboard')">Back to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-error-500">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">⚠️</div>
+        <div class="state-title">Server error (500)</div>
+        <div class="state-desc">Something went wrong on our end. We're looking into it. Please try again in a few minutes.</div>
+        <button class="btn btn-secondary">Retry</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-error-offline">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">🌐</div>
+        <div class="state-title">You are offline</div>
+        <div class="state-desc">Please check your internet connection. We'll automatically reconnect you when you're back online.</div>
+        <button class="btn btn-primary">Try reconnecting</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-error-permission">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">🔒</div>
+        <div class="state-title">Permission denied</div>
+        <div class="state-desc">You do not have the required role to access this module. Please contact your branch manager.</div>
+        <button class="btn btn-secondary" onclick="showScreen('dashboard')">Go back</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══════ DEMO CONTROLS ══════ -->
+<div class="demo-controls" id="demoControls">
+  <div class="demo-header" onclick="this.parentElement.classList.toggle('pinned')">
+    Demo Controls
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+  </div>
+  <div class="demo-section">
+    <div class="demo-label">Role Dashboard</div>
+    <select class="demo-select" onchange="showScreen(this.value)">
+      <option value="dashboard">Owner (Current)</option>
+      <option value="dashboard-manager">Manager</option>
+      <option value="dashboard-cashier">Cashier</option>
+      <option value="dashboard-kitchen">Kitchen Staff</option>
+    </select>
+  </div>
+  <div class="demo-section">
+    <div class="demo-label">Empty States</div>
+    <select class="demo-select" onchange="if(this.value) showScreen(this.value); this.value=''">
+      <option value="">Select state...</option>
+      <option value="empty-orders">No Orders</option>
+      <option value="empty-inventory">No Inventory</option>
+      <option value="empty-reports">No Reports</option>
+    </select>
+  </div>
+  <div class="demo-section" style="margin-bottom:0">
+    <div class="demo-label">Error States</div>
+    <select class="demo-select" style="margin-bottom:0" onchange="if(this.value) showScreen(this.value); this.value=''">
+      <option value="">Select error...</option>
+      <option value="error-404">404 Not Found</option>
+      <option value="error-500">500 Server Error</option>
+      <option value="error-offline">Offline</option>
+      <option value="error-permission">Permission Denied</option>
+    </select>
+  </div>
+</div>
+
+<script>
+  function showScreen(name) {
+    document.querySelectorAll('.screen-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const el = document.getElementById('screen-' + name);
+    if (el) el.classList.add('active');
+
+    const titles = {
+      dashboard: 'Dashboard',
+      pos: 'Point of Sale',
+      kitchen: 'Kitchen',
+      inventory: 'Inventory',
+      reports: 'Reports',
+      settings: 'Settings'
+    };
+    document.getElementById('topbar-title').textContent = titles[name] || name;
+
+    // Activate correct nav item
+    const navMap = {
+      dashboard: 0,
+      pos: 1,
+      kitchen: 2,
+      inventory: 3,
+      reports: 4,
+      settings: 8
+    };
+    const items = document.querySelectorAll('.nav-item');
+    if (items[navMap[name]]) items[navMap[name]].classList.add('active');
+
+    // POS needs full height
+    document.querySelector('.page, .pos-layout, .settings-layout');
+    if (name === 'pos') {
+      document.querySelector('.main').style.overflow = 'hidden';
+    } else {
+      document.querySelector('.main').style.overflow = '';
+    }
+  }
+
+  // Toggle switches
+  document.querySelectorAll('.toggle-switch').forEach(t => {
+    t.addEventListener('click', () => t.classList.toggle('off'));
+  });
+
+  // Settings nav
+  document.querySelectorAll('.settings-nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // Category pills
+  document.querySelectorAll('.cat-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+    });
+  });
+
+  // Pay method buttons
+  document.querySelectorAll('.pay-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
