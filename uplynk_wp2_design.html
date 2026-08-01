@@ -1,0 +1,3343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uplynk ERP — Work Package 2: UI/UX Expansion</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0E0F0D;
+    --surface: #141510;
+    --surface-2: #1C1D17;
+    --surface-3: #23241C;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.13);
+    --text: #F5F5F0;
+    --text-2: #9B9E8E;
+    --text-3: #5A5D4E;
+    --accent: #E8D44D;
+    --accent-2: #F0DF72;
+    --accent-dark: #B8A824;
+    --accent-glow: rgba(232,212,77,0.12);
+    --green: #5EC269;
+    --green-bg: rgba(94,194,105,0.1);
+    --amber: #F5A623;
+    --amber-bg: rgba(245,166,35,0.1);
+    --red: #E85C5C;
+    --red-bg: rgba(232,92,92,0.1);
+    --blue: #6BBFCC;
+    --blue-bg: rgba(107,191,204,0.1);
+    --sans: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --sidebar-w: 220px;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans);
+    font-weight: 700; font-size: 14px; color: #0E0F0D;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text {
+    font-family: var(--sans);
+    font-weight: 600; font-size: 15px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .logo-sub {
+    font-size: 10px; color: var(--text-3);
+    font-family: var(--body);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-top: 1px;
+  }
+
+  .sidebar-section {
+    padding: 14px 10px 6px;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text-2);
+    font-size: 13px;
+    font-weight: 450;
+    margin-bottom: 1px;
+    text-decoration: none;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+
+  .nav-item:hover { background: var(--surface-2); color: var(--text); }
+
+  .nav-item.active {
+    background: var(--accent-glow);
+    color: var(--accent-2);
+    font-weight: 500;
+  }
+
+  .nav-icon {
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--accent-glow);
+    color: var(--accent-2);
+    border-radius: 20px;
+    padding: 1px 7px;
+  }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding: 12px 10px;
+  }
+
+  .user-row {
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .user-row:hover { background: var(--surface-2); }
+
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: #fff;
+    flex-shrink: 0;
+  }
+
+  .user-info .name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .user-info .role { font-size: 10px; color: var(--text-3); }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    height: 56px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 28px;
+    gap: 16px;
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 50;
+  }
+
+  .topbar-breadcrumb {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  .topbar-breadcrumb .current {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .topbar-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .branch-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    padding: 5px 12px 5px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .branch-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+  }
+
+  .icon-btn {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text-2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+
+  .notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    border: 1.5px solid var(--bg);
+  }
+
+  /* ── PAGE CONTENT ── */
+  .page {
+    padding: 28px 32px;
+    flex: 1;
+  }
+
+  /* Section tabs */
+  .section-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+    margin-bottom: 28px;
+    width: fit-content;
+  }
+
+  .tab {
+    padding: 7px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none; background: none;
+  }
+  .tab:hover { color: var(--text-2); }
+  .tab.active {
+    background: var(--surface-3);
+    color: var(--text);
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .page-title {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .page-sub {
+    font-size: 13px; color: var(--text-3);
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #5558E8; }
+
+  .btn-secondary {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text-2);
+  }
+  .btn-secondary:hover { background: var(--surface-3); color: var(--text); }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .kpi-value {
+    font-family: var(--sans);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .kpi-change {
+    font-size: 12px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .kpi-change.up { color: var(--green); }
+  .kpi-change.down { color: var(--red); }
+
+  /* ── CONTENT GRID ── */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .panel-body { padding: 0; }
+
+  /* ── CHART BARS ── */
+  .chart-wrap {
+    padding: 20px 20px 0;
+  }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 140px;
+  }
+
+  .bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar {
+    width: 100%;
+    background: var(--accent);
+    border-radius: 4px 4px 0 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    min-height: 4px;
+  }
+  .bar:hover { opacity: 1; }
+  .bar.alt { background: var(--surface-3); opacity: 1; }
+
+  .bar-label {
+    font-size: 10px;
+    color: var(--text-3);
+    padding-bottom: 8px;
+  }
+
+  .chart-axis {
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    padding: 10px 0;
+    display: flex; justify-content: space-between;
+  }
+
+  .axis-label { font-size: 10px; color: var(--text-3); }
+
+  /* ── ORDER LIST ── */
+  .order-list { }
+
+  .order-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .order-item:last-child { border-bottom: none; }
+  .order-item:hover { background: var(--surface-2); }
+
+  .order-num {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 60px;
+  }
+
+  .order-info { flex: 1; }
+  .order-name { font-size: 13px; color: var(--text); font-weight: 450; }
+  .order-time { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+  .order-amount {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .status-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .status-pill.paid { background: var(--green-bg); color: var(--green); }
+  .status-pill.pending { background: var(--amber-bg); color: var(--amber); }
+  .status-pill.prep { background: var(--blue-bg); color: var(--blue); }
+
+  /* ── QUICK ACTIONS ── */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .qa-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .qa-btn:hover { background: var(--surface-3); border-color: var(--border-strong); }
+
+  .qa-icon {
+    width: 34px; height: 34px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .qa-text .qa-title { font-size: 12px; font-weight: 500; color: var(--text); }
+  .qa-text .qa-sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+  /* ── ALERT PANEL ── */
+  .alert-list { }
+
+  .alert-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .alert-item:last-child { border-bottom: none; }
+
+  .alert-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 4px; flex-shrink: 0;
+  }
+
+  .alert-msg { font-size: 13px; color: var(--text); }
+  .alert-time { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  /* ── INVENTORY TABLE ── */
+  .inv-table {
+    width: 100%; border-collapse: collapse;
+  }
+
+  .inv-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .inv-table td {
+    padding: 13px 20px;
+    font-size: 13px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .inv-table tr:last-child td { border-bottom: none; }
+  .inv-table tr:hover td { background: var(--surface-2); }
+
+  .stock-bar-wrap {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .stock-bar-bg {
+    flex: 1; height: 5px;
+    background: var(--surface-3);
+    border-radius: 10px; overflow: hidden;
+  }
+
+  .stock-bar-fill {
+    height: 100%; border-radius: 10px;
+    transition: width 0.3s;
+  }
+
+  .stock-qty { font-size: 12px; font-weight: 500; min-width: 40px; text-align: right; }
+
+  /* ── KOT CARDS ── */
+  .kot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .kot-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .kot-header {
+    padding: 10px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .kot-num {
+    font-family: var(--sans);
+    font-size: 14px; font-weight: 700;
+    color: var(--text);
+  }
+
+  .kot-timer {
+    font-size: 11px; color: var(--amber); font-weight: 500;
+    background: var(--amber-bg);
+    padding: 2px 7px; border-radius: 10px;
+  }
+
+  .kot-timer.urgent { color: var(--red); background: var(--red-bg); }
+
+  .kot-items { padding: 10px 14px; }
+
+  .kot-item-row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--text-2);
+    padding: 3px 0;
+  }
+
+  .kot-item-qty {
+    font-weight: 600;
+    color: var(--text);
+    margin-right: 6px;
+  }
+
+  .kot-footer {
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 6px;
+  }
+
+  .kot-btn {
+    flex: 1;
+    padding: 6px 0;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .kot-btn.prep { background: var(--blue-bg); color: var(--blue); }
+  .kot-btn.done { background: var(--green-bg); color: var(--green); }
+  .kot-btn.prep:hover { background: var(--blue); color: #fff; }
+  .kot-btn.done:hover { background: var(--green); color: #fff; }
+
+  /* ── POS LAYOUT ── */
+  .pos-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+  }
+
+  .pos-menu {
+    overflow-y: auto;
+    padding: 20px 24px;
+    background: var(--bg);
+  }
+
+  .pos-cart {
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  .pos-cats {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .cat-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+  }
+  .cat-pill:hover { color: var(--text); border-color: var(--border-strong); }
+  .cat-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .menu-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .menu-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .menu-item:active { transform: scale(0.97); }
+
+  .menu-item-emoji { font-size: 28px; margin-bottom: 10px; }
+  .menu-item-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .menu-item-price { font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--accent-2); }
+
+  .cart-header {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--sans);
+    font-size: 14px; font-weight: 600; color: var(--text);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .cart-items {
+    flex: 1; overflow-y: auto;
+    padding: 10px 0;
+  }
+
+  .cart-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 18px;
+  }
+
+  .cart-item-name { flex: 1; font-size: 13px; color: var(--text); }
+  .cart-qty-ctrl {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .qty-btn {
+    width: 22px; height: 22px;
+    border-radius: 50%; border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; font-weight: 500;
+    line-height: 1;
+  }
+  .qty-num { font-size: 13px; font-weight: 600; color: var(--text); min-width: 16px; text-align: center; }
+  .cart-item-price { font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--text); min-width: 55px; text-align: right; }
+
+  .cart-footer {
+    border-top: 1px solid var(--border);
+    padding: 14px 18px;
+  }
+
+  .cart-totals { margin-bottom: 14px; }
+  .cart-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--text-2);
+    padding: 3px 0;
+  }
+  .cart-row.total { color: var(--text); font-weight: 600; font-size: 15px; padding-top: 8px; border-top: 1px solid var(--border); margin-top: 6px; }
+
+  .pay-methods { display: flex; gap: 6px; margin-bottom: 12px; }
+  .pay-btn {
+    flex: 1; padding: 8px 0;
+    border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--text-2);
+    transition: all 0.15s; text-align: center;
+  }
+  .pay-btn:hover { background: var(--surface-3); color: var(--text); }
+  .pay-btn.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent-2); }
+
+  .charge-btn {
+    width: 100%; padding: 13px;
+    background: var(--accent);
+    color: #fff;
+    border: none; border-radius: var(--radius-sm);
+    font-family: var(--sans);
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+    letter-spacing: -0.2px;
+  }
+  .charge-btn:hover { background: #5558E8; }
+
+  /* ── SCREEN SECTIONS ── */
+  .screen-section { display: none; }
+  .screen-section.active { display: block; }
+
+  .pos-section { display: none; }
+  .pos-section.active { display: flex; flex-direction: column; flex: 1; }
+
+  /* ── SETTINGS ── */
+  .settings-layout {
+    display: grid; grid-template-columns: 200px 1fr; gap: 0;
+  }
+
+  .settings-nav {
+    border-right: 1px solid var(--border);
+    padding: 16px 10px;
+  }
+
+  .settings-nav-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 13px; color: var(--text-2);
+    cursor: pointer; margin-bottom: 1px;
+    transition: all 0.15s;
+  }
+  .settings-nav-item:hover { background: var(--surface-2); color: var(--text); }
+  .settings-nav-item.active { background: var(--surface-2); color: var(--text); }
+
+  .settings-content {
+    padding: 24px 28px;
+  }
+
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-size: 12px; font-weight: 500; color: var(--text-2);
+    margin-bottom: 7px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 9px 13px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--body);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color: var(--text-3); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+  }
+
+  .toggle-info .toggle-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .toggle-info .toggle-desc { font-size: 12px; color: var(--text-3); }
+
+  .toggle-switch {
+    width: 36px; height: 20px;
+    background: var(--accent);
+    border-radius: 10px;
+    position: relative; cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-switch.off { background: var(--surface-3); }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 18px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.2s;
+  }
+  .toggle-switch.off::after { left: 2px; }
+
+  .divider-line {
+    border: none; border-top: 1px solid var(--border);
+    margin: 22px 0;
+  }
+
+  .settings-section-title {
+    font-family: var(--sans);
+    font-size: 15px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  /* Reports */
+  .report-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-bottom: 20px;
+  }
+
+  .report-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .report-card:hover { border-color: var(--border-strong); }
+
+  .report-icon {
+    font-size: 22px; margin-bottom: 12px;
+  }
+
+  .report-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .report-desc { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+  .report-meta { margin-top: 12px; font-size: 11px; color: var(--text-3); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
+
+  /* ── EMPTY / MISC ── */
+  .text-muted { color: var(--text-3); }
+  .text-accent { color: var(--accent-2); }
+  .font-mono { font-family: 'SF Mono', monospace; }
+
+  /* ── GLOBAL SEARCH ── */
+  .global-search {
+    flex: 1; max-width: 400px;
+    position: relative;
+    margin: 0 20px;
+  }
+  .global-search input {
+    width: 100%;
+    padding: 8px 14px 8px 36px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--body);
+    outline: none;
+    transition: all 0.2s;
+  }
+  .global-search input:focus { border-color: var(--accent); background: var(--surface); }
+  .global-search input::placeholder { color: var(--text-3); }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--text-3);
+  }
+
+  /* ── DROPDOWNS & POPOVERS ── */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .dropdown-menu {
+    position: absolute;
+    top: 100%; right: 0;
+    margin-top: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 1000;
+    opacity: 0; visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s;
+  }
+  .dropdown.active .dropdown-menu {
+    opacity: 1; visibility: visible;
+    transform: translateY(0);
+  }
+  .dropdown-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-2);
+  }
+  .dropdown-item {
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .dropdown-item:hover { background: var(--surface-2); }
+  .dropdown-item.danger { color: var(--red); }
+  .dropdown-item.danger:hover { background: var(--red-bg); }
+  .dropdown-divider { border-top: 1px solid var(--border); margin: 4px 0; }
+
+  /* ── NOTIFICATION DRAWER ── */
+  .notif-drawer {
+    position: fixed; top: 0; right: -400px;
+    width: 380px; height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 2000;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+  }
+  .notif-drawer.open { right: 0; }
+  .notif-header {
+    padding: 20px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .notif-title { font-family: var(--sans); font-size: 18px; font-weight: 600; }
+  .notif-close { cursor: pointer; color: var(--text-2); }
+  .notif-close:hover { color: var(--text); }
+  .notif-tabs { display: flex; gap: 16px; padding: 0 20px; border-bottom: 1px solid var(--border); }
+  .notif-tab { padding: 12px 0; font-size: 13px; color: var(--text-3); cursor: pointer; border-bottom: 2px solid transparent; }
+  .notif-tab.active { color: var(--accent-2); border-color: var(--accent); }
+  .notif-body { flex: 1; overflow-y: auto; padding: 10px 0; }
+  .notif-item { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; cursor: pointer; transition: background 0.15s; }
+  .notif-item:hover { background: var(--surface-2); }
+  .notif-item.unread { background: var(--surface-3); }
+  .notif-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* ── SKELETON LOADERS ── */
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: var(--radius-sm);
+  }
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  .skel-text { height: 14px; margin-bottom: 8px; width: 100%; }
+  .skel-text.short { width: 60%; }
+  .skel-title { height: 24px; width: 40%; margin-bottom: 16px; }
+  .skel-kpi { height: 100px; }
+  .skel-chart { height: 200px; }
+  .skel-table-row { height: 48px; margin-bottom: 1px; border-radius: 0; }
+
+  /* ── EMPTY & ERROR STATES ── */
+  .state-container {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 60px 20px; height: 100%; min-height: 400px;
+  }
+  .state-icon { font-size: 48px; margin-bottom: 20px; opacity: 0.8; }
+  .state-title { font-family: var(--sans); font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .state-desc { font-size: 14px; color: var(--text-2); max-width: 400px; margin-bottom: 24px; }
+  
+  /* ── DEMO CONTROLS ── */
+  .demo-controls {
+    position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+    background: rgba(20,21,16,0.9); backdrop-filter: blur(10px);
+    border: 1px solid var(--accent); border-radius: var(--radius);
+    padding: 16px; width: 280px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    transform: translateY(calc(100% - 44px)); transition: transform 0.3s;
+  }
+  .demo-controls:hover, .demo-controls.pinned { transform: translateY(0); }
+  .demo-header { font-size: 12px; font-weight: 600; color: var(--accent-2); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; cursor: pointer; }
+  .demo-section { margin-bottom: 12px; }
+  .demo-label { font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
+  .demo-select { width: 100%; padding: 6px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 12px; border-radius: 4px; margin-bottom: 8px; }
+
+  /* ══════ WP2: SHARED ══════ */
+
+  .toolbar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 18px;
+  }
+  .toolbar-search {
+    flex: 1; max-width: 320px; position: relative;
+  }
+  .toolbar-search input {
+    width: 100%; padding: 8px 12px 8px 34px;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm); color: var(--text); font-size: 13px;
+    font-family: var(--body); outline: none;
+  }
+  .toolbar-search input:focus { border-color: var(--accent); }
+  .toolbar-search .search-icon { left: 11px; }
+  .toolbar-spacer { flex: 1; }
+  .filter-select {
+    padding: 8px 12px; background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm); color: var(--text-2); font-size: 13px; font-family: var(--body);
+    cursor: pointer; outline: none;
+  }
+
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--text-3); padding: 12px 20px; border-bottom: 1px solid var(--border);
+  }
+  .data-table td { padding: 13px 20px; font-size: 13px; color: var(--text); border-bottom: 1px solid var(--border); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr.clickable { cursor: pointer; transition: background 0.15s; }
+  .data-table tr.clickable:hover td { background: var(--surface-2); }
+  .data-table .text-right { text-align: right; }
+
+  .row-avatar {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .row-avatar .avatar { width: 30px; height: 30px; font-size: 11px; }
+  .row-avatar .name { font-weight: 500; color: var(--text); }
+  .row-avatar .sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px;
+  }
+  .badge.gold { background: var(--accent-glow); color: var(--accent-2); }
+  .badge.silver { background: rgba(255,255,255,0.08); color: var(--text-2); }
+  .badge.bronze { background: rgba(184,168,36,0.1); color: var(--accent-dark); }
+  .badge.green { background: var(--green-bg); color: var(--green); }
+  .badge.amber { background: var(--amber-bg); color: var(--amber); }
+  .badge.red { background: var(--red-bg); color: var(--red); }
+  .badge.blue { background: var(--blue-bg); color: var(--blue); }
+  .badge.neutral { background: var(--surface-3); color: var(--text-2); }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--text-2); cursor: pointer; margin-bottom: 16px;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--text); }
+
+  /* Profile header */
+  .profile-header {
+    display: flex; align-items: center; gap: 18px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px 24px; margin-bottom: 20px;
+  }
+  .profile-avatar-lg {
+    width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans); font-size: 22px; font-weight: 600;
+  }
+  .profile-name { font-family: var(--sans); font-size: 19px; font-weight: 600; color: var(--text); }
+  .profile-meta { font-size: 13px; color: var(--text-3); margin-top: 3px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .profile-actions { margin-left: auto; display: flex; gap: 8px; }
+  .profile-stats {
+    display: flex; gap: 28px; margin-left: auto; padding-left: 24px; border-left: 1px solid var(--border);
+  }
+  .profile-stat .val { font-family: var(--sans); font-size: 18px; font-weight: 600; color: var(--text); }
+  .profile-stat .lbl { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 3000;
+    background: rgba(6,7,5,0.65); backdrop-filter: blur(3px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    width: 520px; max-width: calc(100vw - 40px); max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .modal-box.wide { width: 720px; }
+  .modal-header {
+    padding: 18px 22px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-title { font-family: var(--sans); font-size: 16px; font-weight: 600; color: var(--text); }
+  .modal-close { cursor: pointer; color: var(--text-2); }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 22px; }
+  .modal-footer {
+    padding: 16px 22px; border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+
+  /* Floor plan (Table Management) */
+  .floor-legend { display: flex; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  .floor-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-2); }
+  .floor-legend-dot { width: 9px; height: 9px; border-radius: 3px; }
+  .floor-plan {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+  }
+  .floor-table {
+    background: var(--surface); border: 1.5px solid var(--border-strong); border-radius: var(--radius);
+    padding: 16px 14px; cursor: pointer; transition: all 0.15s; position: relative;
+  }
+  .floor-table:hover { transform: translateY(-2px); }
+  .floor-table.available { border-color: rgba(94,194,105,0.35); background: var(--green-bg); }
+  .floor-table.occupied { border-color: rgba(232,92,92,0.35); background: var(--red-bg); }
+  .floor-table.reserved { border-color: rgba(107,191,204,0.35); background: var(--blue-bg); }
+  .floor-table.cleaning { border-color: rgba(245,166,35,0.35); background: var(--amber-bg); }
+  .floor-table-name { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .floor-table-seats { font-size: 11px; color: var(--text-3); margin-bottom: 10px; }
+  .floor-table-status {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .floor-table.available .floor-table-status { color: var(--green); }
+  .floor-table.occupied .floor-table-status { color: var(--red); }
+  .floor-table.reserved .floor-table-status { color: var(--blue); }
+  .floor-table.cleaning .floor-table-status { color: var(--amber); }
+  .floor-table-check { position: absolute; top: 10px; right: 10px; }
+  .table-select-bar {
+    display: none; align-items: center; gap: 10px;
+    background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+    padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: var(--text-2);
+  }
+  .table-select-bar.active { display: flex; }
+
+  /* Calendar (Reservations) */
+  .res-view-toggle { display: flex; gap: 2px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; width: fit-content; }
+  .res-view-btn { padding: 7px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; color: var(--text-3); cursor: pointer; border: none; background: none; }
+  .res-view-btn.active { background: var(--surface-3); color: var(--text); }
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .calendar-dow { background: var(--surface); padding: 10px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.04em; }
+  .calendar-cell { background: var(--surface); min-height: 92px; padding: 8px; }
+  .calendar-cell.muted { background: var(--bg); }
+  .calendar-cell.today { background: var(--accent-glow); }
+  .calendar-date { font-size: 12px; color: var(--text-2); margin-bottom: 6px; }
+  .calendar-cell.today .calendar-date { color: var(--accent-2); font-weight: 600; }
+  .calendar-res {
+    font-size: 10px; padding: 3px 6px; border-radius: 4px; margin-bottom: 3px;
+    background: var(--blue-bg); color: var(--blue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .calendar-res.pending { background: var(--amber-bg); color: var(--amber); }
+
+  /* Purchase Orders */
+  .po-summary-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .po-total { font-size: 13px; color: var(--text-2); }
+  .po-total b { color: var(--text); font-family: var(--sans); }
+
+  /* Accounting: journal & transactions */
+  .journal-entry { border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px; overflow: hidden; }
+  .journal-head { display: flex; justify-content: space-between; padding: 12px 16px; background: var(--surface-2); font-size: 12px; color: var(--text-2); }
+  .journal-lines td { padding: 9px 16px; font-size: 12px; }
+  .journal-lines th { padding: 8px 16px; font-size: 10px; }
+
+  /* Employee attendance / leave timeline */
+  .attendance-row { display: flex; align-items: center; gap: 12px; padding: 10px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .attendance-row:last-child { border-bottom: none; }
+  .attendance-day { width: 90px; color: var(--text-2); }
+  .attendance-time { color: var(--text-3); font-size: 12px; }
+
+  .stars { color: var(--accent-2); font-size: 12px; letter-spacing: 1px; }
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">U</div>
+    <div>
+      <div class="logo-text">Uplynk ERP</div>
+      <div class="logo-sub">Restaurant Cloud Platform</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Sales & Customers</div>
+    <button class="nav-item active" onclick="showScreen('dashboard')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="showScreen('pos')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 15h2m4 0h2"/></svg></span>
+      Point of Sale
+      <span class="nav-badge">3</span>
+    </button>
+    <button class="nav-item" onclick="showScreen('customers')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+      Customers
+    </button>
+    <button class="nav-item" onclick="showScreen('reservations')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+      Reservations
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Operations</div>
+    <button class="nav-item" onclick="showScreen('kitchen')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2v6a6 6 0 0012 0V2"/><path d="M6 8h12M12 14v7m-3 0h6"/></svg></span>
+      Kitchen
+      <span class="nav-badge">7</span>
+    </button>
+    <button class="nav-item" onclick="showScreen('inventory')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      Inventory
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>
+      Menu Management
+    </button>
+    <button class="nav-item" onclick="showScreen('tables')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></span>
+      Table Management
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Supply & Finance</div>
+    <button class="nav-item" onclick="showScreen('suppliers')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></span>
+      Suppliers
+    </button>
+    <button class="nav-item" onclick="showScreen('purchase-orders')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></span>
+      Purchases
+    </button>
+    <button class="nav-item" onclick="showScreen('accounting');showAcctTab('expenses')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>
+      Expenses
+    </button>
+    <button class="nav-item" onclick="showScreen('accounting');showAcctTab('dashboard')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="22"/><line x1="8" y1="2" x2="8" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg></span>
+      Accounting
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">HR</div>
+    <button class="nav-item" onclick="showScreen('employees');showEmpListView()">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+      Employees
+    </button>
+    <button class="nav-item" onclick="showScreen('employees');showEmpProfile('emp1');showEmpTab('attendance')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      Attendance
+    </button>
+    <button class="nav-item" onclick="showScreen('employees');showEmpProfile('emp1');showEmpTab('payroll')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/><path d="M2 13h4v4m0 0v4m0-4h4"/></svg></span>
+      Payroll
+    </button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">System & Admin</div>
+    <button class="nav-item" onclick="showScreen('reports')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span>
+      Reports
+    </button>
+    <button class="nav-item" onclick="showScreen('settings')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
+      Settings
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
+      Notifications
+    </button>
+    <button class="nav-item" onclick="showScreen('audit-logs')">
+      <span class="nav-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+      Audit Logs
+    </button>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="dropdown" style="width: 100%;">
+      <div class="user-row" onclick="this.parentElement.classList.toggle('active')">
+        <div class="avatar">AH</div>
+        <div class="user-info">
+          <div class="name" id="current-user-name">Admin User</div>
+          <div class="role" id="current-user-role">Super Admin</div>
+        </div>
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="color:var(--text-3);margin-left:auto"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="dropdown-menu" style="bottom: 100%; top: auto; margin-bottom: 8px;">
+        <div class="dropdown-header">User Profile</div>
+        <div class="dropdown-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> View Profile</div>
+        <div class="dropdown-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Settings</div>
+        <div class="dropdown-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg> Language</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-breadcrumb">
+      <span>Uplynk ERP</span>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="current" id="topbar-title">Dashboard</span>
+    </div>
+
+    <!-- Global Search -->
+    <div class="global-search">
+      <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search customers, orders, products...">
+    </div>
+
+    <div class="topbar-right">
+      <!-- Multi-Tenant Switcher -->
+      <div class="dropdown">
+        <div class="branch-pill" onclick="this.parentElement.classList.toggle('active')">
+          <div class="branch-dot"></div>
+          Main Branch
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-header">The Burger House</div>
+          <div class="dropdown-item"><div class="branch-dot"></div> Main Branch</div>
+          <div class="dropdown-item"><div class="branch-dot" style="background:var(--surface-3)"></div> Downtown Branch</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Add Branch</div>
+        </div>
+      </div>
+      
+      <!-- Notification Toggle -->
+      <div class="icon-btn" onclick="document.getElementById('notifDrawer').classList.add('open')">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NOTIFICATION DRAWER -->
+  <div class="notif-drawer" id="notifDrawer">
+    <div class="notif-header">
+      <div class="notif-title">Notifications</div>
+      <div class="notif-close" onclick="document.getElementById('notifDrawer').classList.remove('open')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <div class="notif-tabs">
+      <div class="notif-tab active">All</div>
+      <div class="notif-tab">Unread (2)</div>
+      <div class="notif-tab">Alerts</div>
+      <div class="notif-tab">System</div>
+    </div>
+    <div class="notif-body">
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:var(--red-bg);color:var(--red)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Critical Stock Alert</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:2px">Chicken breast is below minimum stock (2kg left).</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">5 min ago</div>
+        </div>
+      </div>
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:var(--blue-bg);color:var(--blue)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Shift Started</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:2px">Sarah (Cashier) started her shift.</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">15 min ago</div>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon" style="background:var(--green-bg);color:var(--green)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--text)">Daily Goal Reached</div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:2px">Main Branch has reached its daily revenue goal!</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">2 hrs ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ DASHBOARD ══════ -->
+  <div class="screen-section active" id="screen-dashboard">
+    <div class="page">
+      <div class="page-header" style="align-items: center;">
+        <div>
+          <div class="page-title">Owner Dashboard ☀️</div>
+          <div class="page-sub">Here's what's happening at Main Branch today — Sunday, 13 July 2026</div>
+        </div>
+        
+        <div class="section-tabs" style="margin-bottom:0">
+          <button class="tab active">Today</button>
+          <button class="tab">Week</button>
+          <button class="tab">Month</button>
+          <button class="tab">Custom Date <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            Refresh
+          </button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 15 21 21 3 21 3 15"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export
+          </button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Today's Sales
+          </div>
+          <div class="kpi-value">PKR 84,200</div>
+          <div class="kpi-change up">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            +12% vs yesterday
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            Orders Today
+          </div>
+          <div class="kpi-value">147</div>
+          <div class="kpi-change up">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            +8% vs yesterday
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Avg. Order Value
+          </div>
+          <div class="kpi-value">PKR 573</div>
+          <div class="kpi-change down">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+            −3% vs yesterday
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+            Low Stock Alerts
+          </div>
+          <div class="kpi-value" style="color:var(--amber)">4</div>
+          <div class="kpi-change" style="color:var(--amber)">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Action required
+          </div>
+        </div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="content-grid">
+        <!-- Sales chart -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Sales this week</div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px">Week</button>
+              <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px;background:var(--surface-3);color:var(--text)">Month</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="chart-wrap">
+              <div class="chart-bars">
+                <div class="bar-group"><div class="bar" style="height:55%"></div><div class="bar-label">Mon</div></div>
+                <div class="bar-group"><div class="bar" style="height:70%"></div><div class="bar-label">Tue</div></div>
+                <div class="bar-group"><div class="bar" style="height:45%"></div><div class="bar-label">Wed</div></div>
+                <div class="bar-group"><div class="bar" style="height:80%"></div><div class="bar-label">Thu</div></div>
+                <div class="bar-group"><div class="bar" style="height:90%"></div><div class="bar-label">Fri</div></div>
+                <div class="bar-group"><div class="bar" style="height:100%"></div><div class="bar-label">Sat</div></div>
+                <div class="bar-group"><div class="bar alt" style="height:60%"></div><div class="bar-label">Sun</div></div>
+              </div>
+              <div class="chart-axis">
+                <span class="axis-label">PKR 0</span>
+                <span class="axis-label">PKR 40K</span>
+                <span class="axis-label">PKR 80K</span>
+              </div>
+            </div>
+            <div style="padding:0 20px 4px">
+              <div class="panel-header" style="padding:14px 0;border-bottom:none;border-top:1px solid var(--border)">
+                <div class="panel-title" style="font-size:13px">Recent orders</div>
+                <span style="font-size:12px;color:var(--accent-2);cursor:pointer">View all →</span>
+              </div>
+            </div>
+            <div class="order-list">
+              <div class="order-item">
+                <div class="order-num">#1047</div>
+                <div class="order-info">
+                  <div class="order-name">Chicken Burger Meal × 2</div>
+                  <div class="order-time">2 min ago · Table 4</div>
+                </div>
+                <div class="order-amount">PKR 1,200</div>
+                <span class="status-pill prep">In prep</span>
+              </div>
+              <div class="order-item">
+                <div class="order-num">#1046</div>
+                <div class="order-info">
+                  <div class="order-name">Zinger + Fries + Drink</div>
+                  <div class="order-time">9 min ago · Counter</div>
+                </div>
+                <div class="order-amount">PKR 680</div>
+                <span class="status-pill paid">Paid</span>
+              </div>
+              <div class="order-item">
+                <div class="order-num">#1045</div>
+                <div class="order-info">
+                  <div class="order-name">Pizza Margherita (L)</div>
+                  <div class="order-time">14 min ago · Table 7</div>
+                </div>
+                <div class="order-amount">PKR 950</div>
+                <span class="status-pill paid">Paid</span>
+              </div>
+              <div class="order-item">
+                <div class="order-num">#1044</div>
+                <div class="order-info">
+                  <div class="order-name">Latte × 3 + Brownie</div>
+                  <div class="order-time">21 min ago · Takeaway</div>
+                </div>
+                <div class="order-amount">PKR 820</div>
+                <span class="status-pill pending">Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <!-- Quick actions -->
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Quick actions</div></div>
+            <div class="quick-actions">
+              <div class="qa-btn" onclick="showScreen('pos')">
+                <div class="qa-icon" style="background:var(--accent-glow)">
+                  <svg width="17" height="17" fill="none" stroke="var(--accent-2)" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                </div>
+                <div class="qa-text"><div class="qa-title">New sale</div><div class="qa-sub">Open POS</div></div>
+              </div>
+              <div class="qa-btn">
+                <div class="qa-icon" style="background:var(--green-bg)">
+                  <svg width="17" height="17" fill="none" stroke="var(--green)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16V8z"/></svg>
+                </div>
+                <div class="qa-text"><div class="qa-title">Add stock</div><div class="qa-sub">Inventory</div></div>
+              </div>
+              <div class="qa-btn">
+                <div class="qa-icon" style="background:var(--amber-bg)">
+                  <svg width="17" height="17" fill="none" stroke="var(--amber)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                </div>
+                <div class="qa-text"><div class="qa-title">Staff</div><div class="qa-sub">Employees</div></div>
+              </div>
+              <div class="qa-btn" onclick="showScreen('reports')">
+                <div class="qa-icon" style="background:var(--blue-bg)">
+                  <svg width="17" height="17" fill="none" stroke="var(--blue)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                </div>
+                <div class="qa-text"><div class="qa-title">Reports</div><div class="qa-sub">Analytics</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts -->
+          <div class="panel" style="flex:1">
+            <div class="panel-header">
+              <div class="panel-title">Alerts</div>
+              <span class="status-pill pending">4 new</span>
+            </div>
+            <div class="alert-list">
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--red)"></div>
+                <div>
+                  <div class="alert-msg">Chicken breast below minimum stock (2kg left)</div>
+                  <div class="alert-time">5 min ago</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--amber)"></div>
+                <div>
+                  <div class="alert-msg">Supplier payment due — Al-Barakah Foods</div>
+                  <div class="alert-time">1 hr ago</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--amber)"></div>
+                <div>
+                  <div class="alert-msg">Mozzarella running low (500g remaining)</div>
+                  <div class="alert-time">2 hrs ago</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-dot" style="background:var(--blue)"></div>
+                <div>
+                  <div class="alert-msg">July payroll processing due in 3 days</div>
+                  <div class="alert-time">Today</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ MANAGER DASHBOARD (SKELETON) ══════ -->
+  <div class="screen-section" id="screen-dashboard-manager">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Manager Dashboard</div>
+          <div class="page-sub">Loading operational metrics...</div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+      </div>
+      <div class="content-grid">
+        <div class="panel">
+          <div class="panel-header"><div class="skel-title skeleton" style="margin:0"></div></div>
+          <div class="panel-body" style="padding:20px"><div class="skeleton skel-chart"></div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="panel">
+            <div class="panel-header"><div class="skel-title skeleton" style="margin:0"></div></div>
+            <div class="panel-body" style="padding:20px">
+              <div class="skeleton skel-text"></div>
+              <div class="skeleton skel-text"></div>
+              <div class="skeleton skel-text short"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ CASHIER DASHBOARD (SKELETON) ══════ -->
+  <div class="screen-section" id="screen-dashboard-cashier">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Cashier Dashboard</div>
+          <div class="page-sub">Loading shift details...</div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ KITCHEN STAFF DASHBOARD (SKELETON) ══════ -->
+  <div class="screen-section" id="screen-dashboard-kitchen">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Kitchen Staff Dashboard</div>
+          <div class="page-sub">Loading prep times and order queue...</div>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+        <div class="kpi-card skeleton skel-kpi"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="skel-title skeleton" style="margin:0;width:20%"></div></div>
+        <div class="panel-body" style="padding:20px">
+          <div class="skeleton skel-table-row"></div>
+          <div class="skeleton skel-table-row"></div>
+          <div class="skeleton skel-table-row"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ POS ══════ -->
+  <div class="screen-section" id="screen-pos">
+    <div class="pos-layout">
+      <div class="pos-menu">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-family:var(--sans);font-size:18px;font-weight:600;color:var(--text)">Point of Sale</div>
+            <div style="font-size:12px;color:var(--text-3)">Main Branch · Table / Counter</div>
+          </div>
+          <div class="branch-pill" style="font-size:11px"><div class="branch-dot"></div>Cashier: Sarah</div>
+        </div>
+        <div class="pos-cats">
+          <div class="cat-pill active">All items</div>
+          <div class="cat-pill">🍔 Burgers</div>
+          <div class="cat-pill">🍕 Pizza</div>
+          <div class="cat-pill">🍗 Chicken</div>
+          <div class="cat-pill">🥤 Drinks</div>
+          <div class="cat-pill">🍰 Desserts</div>
+          <div class="cat-pill">🥗 Sides</div>
+        </div>
+        <div class="menu-grid">
+          <div class="menu-item"><div class="menu-item-emoji">🍔</div><div class="menu-item-name">Chicken Burger</div><div class="menu-item-price">PKR 480</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍕</div><div class="menu-item-name">Margherita Pizza</div><div class="menu-item-price">PKR 950</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍗</div><div class="menu-item-name">Zinger Meal</div><div class="menu-item-price">PKR 620</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🥤</div><div class="menu-item-name">Pepsi 500ml</div><div class="menu-item-price">PKR 120</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍟</div><div class="menu-item-name">Fries (Large)</div><div class="menu-item-price">PKR 250</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍰</div><div class="menu-item-name">Brownie</div><div class="menu-item-price">PKR 320</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">☕</div><div class="menu-item-name">Latte</div><div class="menu-item-price">PKR 380</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🥗</div><div class="menu-item-name">Caesar Salad</div><div class="menu-item-price">PKR 550</div></div>
+          <div class="menu-item"><div class="menu-item-emoji">🍱</div><div class="menu-item-name">Combo Meal A</div><div class="menu-item-price">PKR 850</div></div>
+        </div>
+      </div>
+
+      <!-- Cart -->
+      <div class="pos-cart">
+        <div class="cart-header">
+          Order #1048
+          <span style="font-size:12px;font-weight:400;color:var(--text-3)">Table 3</span>
+        </div>
+        <div class="cart-items">
+          <div class="cart-item">
+            <div class="cart-item-name">Chicken Burger</div>
+            <div class="cart-qty-ctrl">
+              <div class="qty-btn">−</div>
+              <div class="qty-num">2</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="cart-item-price">PKR 960</div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-name">Fries (Large)</div>
+            <div class="cart-qty-ctrl">
+              <div class="qty-btn">−</div>
+              <div class="qty-num">1</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="cart-item-price">PKR 250</div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-name">Pepsi 500ml</div>
+            <div class="cart-qty-ctrl">
+              <div class="qty-btn">−</div>
+              <div class="qty-num">2</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="cart-item-price">PKR 240</div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-name">Brownie</div>
+            <div class="cart-qty-ctrl">
+              <div class="qty-btn">−</div>
+              <div class="qty-num">1</div>
+              <div class="qty-btn">+</div>
+            </div>
+            <div class="cart-item-price">PKR 320</div>
+          </div>
+        </div>
+        <div class="cart-footer">
+          <div class="cart-totals">
+            <div class="cart-row"><span>Subtotal</span><span>PKR 1,770</span></div>
+            <div class="cart-row"><span>Tax (17%)</span><span>PKR 300</span></div>
+            <div class="cart-row"><span>Discount</span><span style="color:var(--green)">−PKR 0</span></div>
+            <div class="cart-row total"><span>Total</span><span>PKR 2,070</span></div>
+          </div>
+          <div class="pay-methods">
+            <div class="pay-btn active">Cash</div>
+            <div class="pay-btn">Card</div>
+            <div class="pay-btn">JazzCash</div>
+          </div>
+          <button class="charge-btn">Charge PKR 2,070</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ KITCHEN ══════ -->
+  <div class="screen-section" id="screen-kitchen">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Kitchen Display</div>
+          <div class="page-sub">7 active orders · Main Branch kitchen</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>
+            Kitchen online
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <span class="status-pill prep" style="font-size:12px;padding:5px 12px">New (3)</span>
+        <span class="status-pill pending" style="font-size:12px;padding:5px 12px">In prep (3)</span>
+        <span class="status-pill paid" style="font-size:12px;padding:5px 12px">Ready (1)</span>
+      </div>
+
+      <div class="kot-grid">
+        <div class="kot-card">
+          <div class="kot-header">
+            <div class="kot-num">#1048</div>
+            <div class="kot-timer urgent">12:34</div>
+          </div>
+          <div class="kot-items">
+            <div class="kot-item-row"><span><span class="kot-item-qty">×2</span>Chicken Burger</span><span style="color:var(--text-3);font-size:11px">No pickles</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Fries (Large)</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Brownie</span></div>
+          </div>
+          <div class="kot-footer">
+            <button class="kot-btn prep">In prep</button>
+            <button class="kot-btn done">Ready</button>
+          </div>
+        </div>
+        <div class="kot-card">
+          <div class="kot-header">
+            <div class="kot-num">#1047</div>
+            <div class="kot-timer">08:12</div>
+          </div>
+          <div class="kot-items">
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Margherita Pizza</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×2</span>Pepsi 500ml</span></div>
+          </div>
+          <div class="kot-footer">
+            <button class="kot-btn prep">In prep</button>
+            <button class="kot-btn done">Ready</button>
+          </div>
+        </div>
+        <div class="kot-card">
+          <div class="kot-header">
+            <div class="kot-num">#1046</div>
+            <div class="kot-timer">05:40</div>
+          </div>
+          <div class="kot-items">
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Zinger Meal</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×1</span>Caesar Salad</span></div>
+            <div class="kot-item-row"><span><span class="kot-item-qty">×3</span>Latte</span><span style="color:var(--text-3);font-size:11px">Extra shot</span></div>
+          </div>
+          <div class="kot-footer">
+            <button class="kot-btn prep">In prep</button>
+            <button class="kot-btn done">Ready</button>
+          </div>
+        </div>
+        <div class="kot-card" style="border-color:var(--green);opacity:0.7">
+          <div class="kot-header">
+            <div class="kot-num">#1045</div>
+            <div class="kot-timer" style="background:var(--green-bg);color:var(--green)">Ready ✓</div>
+          </div>
+          <div class="kot-items">
+            <div class="kot-item-row"><span><span class="kot-item-qty">×2</span>Combo Meal A</span></div>
+          </div>
+          <div class="kot-footer">
+            <button class="kot-btn done" style="flex:1;background:var(--green-bg);color:var(--green)">Served</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ INVENTORY ══════ -->
+  <div class="screen-section" id="screen-inventory">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Inventory</div>
+          <div class="page-sub">32 ingredients tracked · Last updated 2 min ago</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search
+          </button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add item
+          </button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Stock levels</div>
+          <div style="display:flex;gap:6px">
+            <span class="status-pill pending">4 low stock</span>
+            <span class="status-pill paid">28 in stock</span>
+          </div>
+        </div>
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Category</th>
+              <th>Stock level</th>
+              <th>Unit</th>
+              <th>Reorder at</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:500">Chicken Breast</td>
+              <td style="color:var(--text-3)">Protein</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:15%;background:var(--red)"></div></div>
+                  <div class="stock-qty" style="color:var(--red)">2 kg</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">kg</td>
+              <td style="color:var(--text-3)">5 kg</td>
+              <td><span class="status-pill" style="background:var(--red-bg);color:var(--red)">Critical</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Mozzarella Cheese</td>
+              <td style="color:var(--text-3)">Dairy</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:25%;background:var(--amber)"></div></div>
+                  <div class="stock-qty" style="color:var(--amber)">500g</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">g</td>
+              <td style="color:var(--text-3)">1 kg</td>
+              <td><span class="status-pill pending">Low</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Burger Buns</td>
+              <td style="color:var(--text-3)">Bakery</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:75%;background:var(--green)"></div></div>
+                  <div class="stock-qty" style="color:var(--green)">48 pcs</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">pcs</td>
+              <td style="color:var(--text-3)">20 pcs</td>
+              <td><span class="status-pill paid">Good</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Tomato Sauce</td>
+              <td style="color:var(--text-3)">Condiment</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:60%;background:var(--green)"></div></div>
+                  <div class="stock-qty" style="color:var(--green)">3.2 kg</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">kg</td>
+              <td style="color:var(--text-3)">1 kg</td>
+              <td><span class="status-pill paid">Good</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">Cooking Oil</td>
+              <td style="color:var(--text-3)">Oil</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:40%;background:var(--accent)"></div></div>
+                  <div class="stock-qty">4 L</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">L</td>
+              <td style="color:var(--text-3)">2 L</td>
+              <td><span class="status-pill paid">Good</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:500">All-Purpose Flour</td>
+              <td style="color:var(--text-3)">Dry goods</td>
+              <td>
+                <div class="stock-bar-wrap">
+                  <div class="stock-bar-bg"><div class="stock-bar-fill" style="width:85%;background:var(--green)"></div></div>
+                  <div class="stock-qty" style="color:var(--green)">17 kg</div>
+                </div>
+              </td>
+              <td style="color:var(--text-3)">kg</td>
+              <td style="color:var(--text-3)">5 kg</td>
+              <td><span class="status-pill paid">Good</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ REPORTS ══════ -->
+  <div class="screen-section" id="screen-reports">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Reports & Analytics</div>
+          <div class="page-sub">Business intelligence for Main Branch · July 2026</div>
+        </div>
+        <button class="btn btn-primary">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 15 21 21 3 21 3 15"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export PDF
+        </button>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-icon">📊</div>
+          <div class="report-name">Daily sales report</div>
+          <div class="report-desc">Order volume, revenue, average order value by hour</div>
+          <div class="report-meta">Last generated: Today 8:00 AM</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">📦</div>
+          <div class="report-name">Inventory report</div>
+          <div class="report-desc">Stock levels, consumption rates, wastage tracking</div>
+          <div class="report-meta">Last generated: Yesterday 11:30 PM</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">💰</div>
+          <div class="report-name">Profit & loss</div>
+          <div class="report-desc">Revenue vs costs, gross margin, net profit</div>
+          <div class="report-meta">Last generated: Jul 1, 2026</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">👥</div>
+          <div class="report-name">Payroll report</div>
+          <div class="report-desc">Staff salaries, attendance, deductions</div>
+          <div class="report-meta">Last generated: Jun 30, 2026</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">🚚</div>
+          <div class="report-name">Supplier payments</div>
+          <div class="report-desc">Outstanding balances, payment history, credit terms</div>
+          <div class="report-meta">Last generated: Jul 10, 2026</div>
+        </div>
+        <div class="report-card">
+          <div class="report-icon">🏪</div>
+          <div class="report-name">Branch comparison</div>
+          <div class="report-desc">Side-by-side performance across all branches</div>
+          <div class="report-meta">Last generated: Jul 7, 2026</div>
+        </div>
+      </div>
+
+      <!-- Summary stats -->
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">July 2026 at a glance</div></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0">
+          <div style="padding:20px;border-right:1px solid var(--border)">
+            <div class="kpi-label">Total revenue</div>
+            <div class="kpi-value" style="font-size:22px">PKR 24.8L</div>
+            <div class="kpi-change up">+18% vs June</div>
+          </div>
+          <div style="padding:20px;border-right:1px solid var(--border)">
+            <div class="kpi-label">Total orders</div>
+            <div class="kpi-value" style="font-size:22px">1,842</div>
+            <div class="kpi-change up">+11% vs June</div>
+          </div>
+          <div style="padding:20px;border-right:1px solid var(--border)">
+            <div class="kpi-label">Top item</div>
+            <div class="kpi-value" style="font-size:18px">Zinger Meal</div>
+            <div style="font-size:12px;color:var(--text-3)">412 orders</div>
+          </div>
+          <div style="padding:20px">
+            <div class="kpi-label">Staff cost %</div>
+            <div class="kpi-value" style="font-size:22px">28.4%</div>
+            <div class="kpi-change down">+2% vs June</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SETTINGS ══════ -->
+  <div class="screen-section" id="screen-settings">
+    <div class="page" style="padding:0">
+      <div class="settings-layout">
+        <div class="settings-nav">
+          <div class="settings-nav-item active">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Organization
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Users & roles
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Branches
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            POS settings
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.13 12a19.79 19.79 0 01-3-8.59A2 2 0 013.11 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.91 8.09a16 16 0 006 6l.55-.55a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            WhatsApp automation
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Security
+          </div>
+          <div class="settings-nav-item">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            Billing & plan
+          </div>
+        </div>
+
+        <div class="settings-content">
+          <div class="settings-section-title">Organization settings</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Business name</label>
+              <input class="form-input" type="text" value="The Burger House">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business type</label>
+              <input class="form-input" type="text" value="Restaurant">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email address</label>
+              <input class="form-input" type="email" value="admin@burgerhouse.pk">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone number</label>
+              <input class="form-input" type="text" value="+92 300 1234567">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Business address</label>
+            <input class="form-input" type="text" value="Blue Area, Islamabad, Pakistan">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tax number (NTN)</label>
+              <input class="form-input" type="text" value="1234567-8">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Currency</label>
+              <input class="form-input" type="text" value="PKR — Pakistani Rupee">
+            </div>
+          </div>
+
+          <hr class="divider-line">
+          <div class="settings-section-title">Notifications</div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">WhatsApp daily sales summary</div>
+              <div class="toggle-desc">Receive end-of-day report via WhatsApp</div>
+            </div>
+            <div class="toggle-switch"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">Low stock alerts</div>
+              <div class="toggle-desc">Alert when inventory drops below reorder level</div>
+            </div>
+            <div class="toggle-switch"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">Payroll reminders</div>
+              <div class="toggle-desc">Remind 3 days before salary due date</div>
+            </div>
+            <div class="toggle-switch off"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">Supplier payment reminders</div>
+              <div class="toggle-desc">Alert on outstanding supplier balances</div>
+            </div>
+            <div class="toggle-switch"></div>
+          </div>
+
+          <hr class="divider-line">
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary">Save changes</button>
+            <button class="btn btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ CUSTOMER MANAGEMENT ══════ -->
+  <div class="screen-section" id="screen-customers">
+    <div class="page">
+
+      <div id="customers-list-view">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Customers</div>
+            <div class="page-sub">248 customers across 2 branches</div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-add-customer')">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Add customer
+          </button>
+        </div>
+
+        <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="kpi-card"><div class="kpi-label">Total customers</div><div class="kpi-value">248</div><div class="kpi-change up">↑ 12 this month</div></div>
+          <div class="kpi-card"><div class="kpi-label">Loyalty members</div><div class="kpi-value">176</div><div class="kpi-change up">↑ 4.2%</div></div>
+          <div class="kpi-card"><div class="kpi-label">Avg. order value</div><div class="kpi-value">Rs 1,840</div><div class="kpi-change up">↑ 6.1%</div></div>
+          <div class="kpi-card"><div class="kpi-label">Repeat rate</div><div class="kpi-value">61%</div><div class="kpi-change down">↓ 1.3%</div></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-search">
+            <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="position:absolute;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search by name or phone...">
+          </div>
+          <select class="filter-select"><option>All tiers</option><option>Gold</option><option>Silver</option><option>Bronze</option></select>
+          <select class="filter-select"><option>All branches</option><option>Main Branch</option><option>Downtown Branch</option></select>
+        </div>
+
+        <div class="panel">
+          <table class="data-table">
+            <thead><tr><th>Customer</th><th>Phone</th><th>Tier</th><th>Loyalty pts</th><th>Orders</th><th>Last visit</th><th class="text-right">Lifetime spend</th></tr></thead>
+            <tbody>
+              <tr class="clickable" onclick="showCustomerProfile('c1')">
+                <td><div class="row-avatar"><div class="avatar">AK</div><div><div class="name">Ayesha Khan</div></div></div></td>
+                <td>+92 301 2345678</td><td><span class="badge gold">Gold</span></td><td>1,240</td><td>38</td><td>Yesterday</td>
+                <td class="text-right">Rs 68,400</td>
+              </tr>
+              <tr class="clickable" onclick="showCustomerProfile('c2')">
+                <td><div class="row-avatar"><div class="avatar">BH</div><div><div class="name">Bilal Hussain</div></div></div></td>
+                <td>+92 333 8891122</td><td><span class="badge silver">Silver</span></td><td>560</td><td>19</td><td>3 days ago</td>
+                <td class="text-right">Rs 29,850</td>
+              </tr>
+              <tr class="clickable" onclick="showCustomerProfile('c3')">
+                <td><div class="row-avatar"><div class="avatar">SF</div><div><div class="name">Sana Fatima</div></div></div></td>
+                <td>+92 300 4567890</td><td><span class="badge bronze">Bronze</span></td><td>140</td><td>6</td><td>2 weeks ago</td>
+                <td class="text-right">Rs 8,200</td>
+              </tr>
+              <tr class="clickable" onclick="showCustomerProfile('c1')">
+                <td><div class="row-avatar"><div class="avatar">UR</div><div><div class="name">Usman Raza</div></div></div></td>
+                <td>+92 321 7765432</td><td><span class="badge gold">Gold</span></td><td>2,010</td><td>54</td><td>Today</td>
+                <td class="text-right">Rs 94,120</td>
+              </tr>
+              <tr class="clickable" onclick="showCustomerProfile('c1')">
+                <td><div class="row-avatar"><div class="avatar">MZ</div><div><div class="name">Maria Zafar</div></div></div></td>
+                <td>+92 345 1122334</td><td><span class="badge silver">Silver</span></td><td>410</td><td>14</td><td>5 days ago</td>
+                <td class="text-right">Rs 21,300</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="customers-profile-view" style="display:none">
+        <div class="back-link" onclick="showCustomerList()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Back to customers
+        </div>
+        <div class="profile-header">
+          <div class="profile-avatar-lg">AK</div>
+          <div>
+            <div class="profile-name">Ayesha Khan</div>
+            <div class="profile-meta">
+              <span>+92 301 2345678</span><span>ayesha.khan@email.com</span><span class="badge gold">Gold member</span>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat"><div class="val">1,240</div><div class="lbl">Loyalty pts</div></div>
+            <div class="profile-stat"><div class="val">38</div><div class="lbl">Orders</div></div>
+            <div class="profile-stat"><div class="val">Rs 68,400</div><div class="lbl">Lifetime spend</div></div>
+          </div>
+          <div class="profile-actions"><button class="btn btn-secondary">Edit</button></div>
+        </div>
+
+        <div class="section-tabs">
+          <button class="tab active" data-tab="overview" onclick="showCustTab('overview')">Overview</button>
+          <button class="tab" data-tab="orders" onclick="showCustTab('orders')">Order history</button>
+          <button class="tab" data-tab="loyalty" onclick="showCustTab('loyalty')">Loyalty activity</button>
+        </div>
+
+        <div id="cust-overview" class="tab-panel active">
+          <div class="content-grid" style="grid-template-columns:1fr 1fr">
+            <div class="panel">
+              <div class="panel-header"><div class="panel-title">Contact details</div></div>
+              <div style="padding:18px 20px">
+                <div class="cart-row"><span>Address</span><span>House 12, F-10/2, Islamabad</span></div>
+                <div class="cart-row"><span>Customer since</span><span>Mar 2023</span></div>
+                <div class="cart-row"><span>Preferred branch</span><span>Main Branch</span></div>
+                <div class="cart-row"><span>Marketing consent</span><span>Yes — WhatsApp</span></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><div class="panel-title">Favorite items</div></div>
+              <div class="order-list">
+                <div class="order-item"><div class="order-info"><div class="order-name">Zinger Burger Meal</div><div class="order-time">Ordered 14 times</div></div></div>
+                <div class="order-item"><div class="order-info"><div class="order-name">Peri Peri Wings</div><div class="order-time">Ordered 9 times</div></div></div>
+                <div class="order-item"><div class="order-info"><div class="order-name">Chocolate Lava Cake</div><div class="order-time">Ordered 7 times</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="cust-orders" class="tab-panel">
+          <div class="panel">
+            <table class="data-table">
+              <thead><tr><th>Order #</th><th>Date</th><th>Branch</th><th>Items</th><th>Status</th><th class="text-right">Amount</th></tr></thead>
+              <tbody>
+                <tr><td>#4821</td><td>Today, 1:20 PM</td><td>Main Branch</td><td>3 items</td><td><span class="status-pill paid">Paid</span></td><td class="text-right">Rs 2,140</td></tr>
+                <tr><td>#4790</td><td>Yesterday, 8:05 PM</td><td>Main Branch</td><td>2 items</td><td><span class="status-pill paid">Paid</span></td><td class="text-right">Rs 1,560</td></tr>
+                <tr><td>#4711</td><td>Jul 24, 7:40 PM</td><td>Downtown Branch</td><td>5 items</td><td><span class="status-pill paid">Paid</span></td><td class="text-right">Rs 3,880</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="cust-loyalty" class="tab-panel">
+          <div class="panel">
+            <div class="alert-list">
+              <div class="alert-item"><div class="alert-dot" style="background:var(--green)"></div><div><div class="alert-msg">+42 points earned on order #4821</div><div class="alert-time">Today, 1:20 PM</div></div></div>
+              <div class="alert-item"><div class="alert-dot" style="background:var(--green)"></div><div><div class="alert-msg">+31 points earned on order #4790</div><div class="alert-time">Yesterday, 8:05 PM</div></div></div>
+              <div class="alert-item"><div class="alert-dot" style="background:var(--red)"></div><div><div class="alert-msg">−500 points redeemed for free dessert</div><div class="alert-time">Jul 18, 6:12 PM</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Customer Modal -->
+  <div class="modal-overlay" id="modal-add-customer">
+    <div class="modal-box">
+      <div class="modal-header"><div class="modal-title">Add customer</div><div class="modal-close" onclick="closeModal('modal-add-customer')">✕</div></div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full name</label><input class="form-input" placeholder="e.g. Ahmed Ali"></div>
+          <div class="form-group"><label class="form-label">Phone number</label><input class="form-input" placeholder="+92 3XX XXXXXXX"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email (optional)</label><input class="form-input" placeholder="name@email.com"></div>
+        <div class="form-group"><label class="form-label">Branch</label><input class="form-input" value="Main Branch"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-add-customer')">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal('modal-add-customer')">Save customer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ TABLE MANAGEMENT ══════ -->
+  <div class="screen-section" id="screen-tables">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Table Management</div>
+          <div class="page-sub">Main Branch floor plan · 16 tables</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary" id="mergeBtn" onclick="alert('Select 2+ tables to merge')">Merge tables</button>
+          <button class="btn btn-primary">+ Add table</button>
+        </div>
+      </div>
+
+      <div class="floor-legend">
+        <div class="floor-legend-item"><div class="floor-legend-dot" style="background:var(--green)"></div> Available</div>
+        <div class="floor-legend-item"><div class="floor-legend-dot" style="background:var(--red)"></div> Occupied</div>
+        <div class="floor-legend-item"><div class="floor-legend-dot" style="background:var(--blue)"></div> Reserved</div>
+        <div class="floor-legend-item"><div class="floor-legend-dot" style="background:var(--amber)"></div> Cleaning</div>
+        <span class="text-muted" style="font-size:12px;margin-left:auto">Click a table to cycle status · demo only</span>
+      </div>
+
+      <div class="floor-plan">
+        <div class="floor-table available" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-01</div><div class="floor-table-seats">2 seats · Window</div><div class="floor-table-status">Available</div></div>
+        <div class="floor-table occupied" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-02</div><div class="floor-table-seats">4 seats · Main hall</div><div class="floor-table-status">Occupied</div></div>
+        <div class="floor-table occupied" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-03</div><div class="floor-table-seats">4 seats · Main hall</div><div class="floor-table-status">Occupied</div></div>
+        <div class="floor-table reserved" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-04</div><div class="floor-table-seats">6 seats · Main hall</div><div class="floor-table-status">Reserved</div></div>
+        <div class="floor-table available" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-05</div><div class="floor-table-seats">2 seats · Window</div><div class="floor-table-status">Available</div></div>
+        <div class="floor-table cleaning" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-06</div><div class="floor-table-seats">4 seats · Main hall</div><div class="floor-table-status">Cleaning</div></div>
+        <div class="floor-table available" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-07</div><div class="floor-table-seats">4 seats · Patio</div><div class="floor-table-status">Available</div></div>
+        <div class="floor-table occupied" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-08</div><div class="floor-table-seats">2 seats · Patio</div><div class="floor-table-status">Occupied</div></div>
+        <div class="floor-table available" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-09</div><div class="floor-table-seats">8 seats · Private room</div><div class="floor-table-status">Available</div></div>
+        <div class="floor-table reserved" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-10</div><div class="floor-table-seats">4 seats · Main hall</div><div class="floor-table-status">Reserved</div></div>
+        <div class="floor-table available" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-11</div><div class="floor-table-seats">2 seats · Window</div><div class="floor-table-status">Available</div></div>
+        <div class="floor-table occupied" onclick="cycleTableStatus(this)"><div class="floor-table-name">T-12</div><div class="floor-table-seats">6 seats · Main hall</div><div class="floor-table-status">Occupied</div></div>
+      </div>
+
+      <div class="panel" style="margin-top:24px">
+        <div class="panel-header"><div class="panel-title">Merge & split history</div></div>
+        <div class="alert-list">
+          <div class="alert-item"><div class="alert-dot" style="background:var(--blue)"></div><div><div class="alert-msg">T-03 + T-04 merged into one booking (party of 10)</div><div class="alert-time">Today, 8:15 PM</div></div></div>
+          <div class="alert-item"><div class="alert-dot" style="background:var(--text-3)"></div><div><div class="alert-msg">T-09 split back into T-09a / T-09b</div><div class="alert-time">Yesterday, 9:40 PM</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ RESERVATIONS ══════ -->
+  <div class="screen-section" id="screen-reservations">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Reservations</div>
+          <div class="page-sub">14 upcoming reservations this week</div>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('modal-new-reservation')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          New reservation
+        </button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+        <div class="res-view-toggle">
+          <button class="res-view-btn active" data-view="calendar" onclick="showResView('calendar')">Calendar</button>
+          <button class="res-view-btn" data-view="list" onclick="showResView('list')">List</button>
+        </div>
+      </div>
+
+      <div id="res-calendar-view">
+        <div class="panel-header" style="border:none;padding:0 0 14px;background:none">
+          <div class="panel-title" style="font-size:16px">August 2026</div>
+          <div style="display:flex;gap:6px">
+            <button class="icon-btn" style="width:30px;height:30px"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="icon-btn" style="width:30px;height:30px"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
+        </div>
+        <div class="calendar-grid">
+          <div class="calendar-dow">Sun</div><div class="calendar-dow">Mon</div><div class="calendar-dow">Tue</div><div class="calendar-dow">Wed</div><div class="calendar-dow">Thu</div><div class="calendar-dow">Fri</div><div class="calendar-dow">Sat</div>
+          <div class="calendar-cell muted"><div class="calendar-date">26</div></div>
+          <div class="calendar-cell muted"><div class="calendar-date">27</div></div>
+          <div class="calendar-cell muted"><div class="calendar-date">28</div></div>
+          <div class="calendar-cell muted"><div class="calendar-date">29</div></div>
+          <div class="calendar-cell muted"><div class="calendar-date">30</div></div>
+          <div class="calendar-cell muted"><div class="calendar-date">31</div></div>
+          <div class="calendar-cell today"><div class="calendar-date">1</div>
+            <div class="calendar-res">7:30 PM Khan (4)</div><div class="calendar-res">8:00 PM Raza (2)</div>
+          </div>
+          <div class="calendar-cell"><div class="calendar-date">2</div><div class="calendar-res pending">1:00 PM Fatima (6)</div></div>
+          <div class="calendar-cell"><div class="calendar-date">3</div></div>
+          <div class="calendar-cell"><div class="calendar-date">4</div><div class="calendar-res">7:00 PM Zafar (2)</div></div>
+          <div class="calendar-cell"><div class="calendar-date">5</div><div class="calendar-res">8:30 PM Hussain (8)</div><div class="calendar-res pending">9:00 PM Malik (4)</div></div>
+          <div class="calendar-cell"><div class="calendar-date">6</div></div>
+          <div class="calendar-cell"><div class="calendar-date">7</div><div class="calendar-res">6:30 PM Sheikh (2)</div></div>
+        </div>
+      </div>
+
+      <div id="res-list-view" style="display:none">
+        <div class="panel">
+          <table class="data-table">
+            <thead><tr><th>Guest</th><th>Date & time</th><th>Party</th><th>Table</th><th>Status</th><th>Contact</th></tr></thead>
+            <tbody>
+              <tr><td>Ayesha Khan</td><td>Today, 7:30 PM</td><td>4 guests</td><td>T-04</td><td><span class="status-pill paid">Confirmed</span></td><td>+92 301 2345678</td></tr>
+              <tr><td>Usman Raza</td><td>Today, 8:00 PM</td><td>2 guests</td><td>T-10</td><td><span class="status-pill paid">Confirmed</span></td><td>+92 321 7765432</td></tr>
+              <tr><td>Sana Fatima</td><td>Aug 2, 1:00 PM</td><td>6 guests</td><td>Unassigned</td><td><span class="status-pill pending">Pending</span></td><td>+92 300 4567890</td></tr>
+              <tr><td>Maria Zafar</td><td>Aug 4, 7:00 PM</td><td>2 guests</td><td>T-11</td><td><span class="status-pill paid">Confirmed</span></td><td>+92 345 1122334</td></tr>
+              <tr><td>Bilal Hussain</td><td>Aug 5, 8:30 PM</td><td>8 guests</td><td>T-09</td><td><span class="status-pill paid">Confirmed</span></td><td>+92 333 8891122</td></tr>
+              <tr><td>Fahad Malik</td><td>Aug 5, 9:00 PM</td><td>4 guests</td><td>Unassigned</td><td><span class="status-pill pending">Pending</span></td><td>+92 312 9988776</td></tr>
+              <tr><td>Hina Sheikh</td><td>Aug 7, 6:30 PM</td><td>2 guests</td><td>T-01</td><td><span class="status-pill prep">Waitlist</span></td><td>+92 302 6655443</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Reservation Modal -->
+  <div class="modal-overlay" id="modal-new-reservation">
+    <div class="modal-box">
+      <div class="modal-header"><div class="modal-title">New reservation</div><div class="modal-close" onclick="closeModal('modal-new-reservation')">✕</div></div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Guest name</label><input class="form-input" placeholder="e.g. Ahmed Ali"></div>
+          <div class="form-group"><label class="form-label">Phone number</label><input class="form-input" placeholder="+92 3XX XXXXXXX"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" value="2026-08-01"></div>
+          <div class="form-group"><label class="form-label">Time</label><input class="form-input" type="time" value="19:30"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Party size</label><input class="form-input" type="number" value="2"></div>
+          <div class="form-group"><label class="form-label">Assign table</label><input class="form-input" placeholder="Auto-assign or select">
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Notes (optional)</label><input class="form-input" placeholder="e.g. window seat, birthday"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-new-reservation')">Cancel</button>
+        <button class="btn btn-primary" onclick="closeModal('modal-new-reservation')">Confirm reservation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SUPPLIER MANAGEMENT ══════ -->
+  <div class="screen-section" id="screen-suppliers">
+    <div class="page">
+
+      <div id="suppliers-list-view">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Suppliers</div>
+            <div class="page-sub">32 active suppliers</div>
+          </div>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Add supplier
+          </button>
+        </div>
+
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi-card"><div class="kpi-label">Outstanding balance</div><div class="kpi-value">Rs 486K</div><div class="kpi-change down">Across 9 suppliers</div></div>
+          <div class="kpi-card"><div class="kpi-label">Purchases this month</div><div class="kpi-value">Rs 1.2M</div><div class="kpi-change up">↑ 8.4%</div></div>
+          <div class="kpi-card"><div class="kpi-label">Overdue payments</div><div class="kpi-value">3</div><div class="kpi-change down">Rs 92K overdue</div></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-search">
+            <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="position:absolute;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search suppliers...">
+          </div>
+          <select class="filter-select"><option>All categories</option><option>Produce</option><option>Meat & poultry</option><option>Beverages</option><option>Packaging</option></select>
+        </div>
+
+        <div class="panel">
+          <table class="data-table">
+            <thead><tr><th>Supplier</th><th>Category</th><th>Contact</th><th>Balance</th><th>Last order</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr class="clickable" onclick="showSupplierProfile('s1')">
+                <td><div class="name" style="font-weight:500">Al-Madina Meat Suppliers</div></td>
+                <td>Meat & poultry</td><td>+92 300 1112233</td><td>Rs 84,500</td><td>3 days ago</td>
+                <td><span class="badge amber">Balance due</span></td>
+              </tr>
+              <tr class="clickable" onclick="showSupplierProfile('s2')">
+                <td><div class="name" style="font-weight:500">Fresh Valley Produce</div></td>
+                <td>Produce</td><td>+92 321 4455667</td><td>Rs 0</td><td>Yesterday</td>
+                <td><span class="badge green">Settled</span></td>
+              </tr>
+              <tr class="clickable" onclick="showSupplierProfile('s1')">
+                <td><div class="name" style="font-weight:500">Crescent Beverages Ltd</div></td>
+                <td>Beverages</td><td>+92 333 7788990</td><td>Rs 22,100</td><td>1 week ago</td>
+                <td><span class="badge amber">Balance due</span></td>
+              </tr>
+              <tr class="clickable" onclick="showSupplierProfile('s1')">
+                <td><div class="name" style="font-weight:500">Packrite Solutions</div></td>
+                <td>Packaging</td><td>+92 345 6677889</td><td>Rs 41,300</td><td>10 days ago</td>
+                <td><span class="badge red">Overdue</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="suppliers-profile-view" style="display:none">
+        <div class="back-link" onclick="showSupplierList()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Back to suppliers
+        </div>
+        <div class="profile-header">
+          <div class="profile-avatar-lg">AM</div>
+          <div>
+            <div class="profile-name">Al-Madina Meat Suppliers</div>
+            <div class="profile-meta"><span>+92 300 1112233</span><span>orders@almadinameat.pk</span><span class="badge amber">Balance due</span></div>
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat"><div class="val">Rs 84,500</div><div class="lbl">Outstanding</div></div>
+            <div class="profile-stat"><div class="val">62</div><div class="lbl">Orders placed</div></div>
+            <div class="profile-stat"><div class="val">Net 15</div><div class="lbl">Payment terms</div></div>
+          </div>
+          <div class="profile-actions"><button class="btn btn-secondary">Record payment</button></div>
+        </div>
+
+        <div class="content-grid" style="grid-template-columns:1fr 1fr">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Contact & address</div></div>
+            <div style="padding:18px 20px">
+              <div class="cart-row"><span>Contact person</span><span>Tariq Mehmood</span></div>
+              <div class="cart-row"><span>Address</span><span>Sector I-9, Islamabad</span></div>
+              <div class="cart-row"><span>Tax number</span><span>3456712-9</span></div>
+              <div class="cart-row"><span>Supplier since</span><span>Jan 2024</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Purchase history</div></div>
+            <table class="data-table">
+              <thead><tr><th>PO #</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>PO-1042</td><td>Jul 29</td><td>Rs 34,200</td><td><span class="status-pill pending">Unpaid</span></td></tr>
+                <tr><td>PO-1035</td><td>Jul 20</td><td>Rs 28,900</td><td><span class="status-pill paid">Paid</span></td></tr>
+                <tr><td>PO-1021</td><td>Jul 6</td><td>Rs 50,300</td><td><span class="status-pill pending">Unpaid</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ PURCHASE ORDERS ══════ -->
+  <div class="screen-section" id="screen-purchase-orders">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Purchase Orders</div>
+          <div class="page-sub">18 orders this month · <span class="po-total">Rs <b>612,400</b> total</span></div>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('modal-new-po')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Create purchase order
+        </button>
+      </div>
+
+      <div class="section-tabs">
+        <button class="tab active" onclick="filterPO('all', this)">All</button>
+        <button class="tab" onclick="filterPO('draft', this)">Draft</button>
+        <button class="tab" onclick="filterPO('pending', this)">Pending approval</button>
+        <button class="tab" onclick="filterPO('approved', this)">Approved</button>
+        <button class="tab" onclick="filterPO('received', this)">Received</button>
+        <button class="tab" onclick="filterPO('cancelled', this)">Cancelled</button>
+      </div>
+
+      <div class="panel">
+        <table class="data-table">
+          <thead><tr><th>PO #</th><th>Supplier</th><th>Date</th><th>Items</th><th>Status</th><th class="text-right">Amount</th><th></th></tr></thead>
+          <tbody>
+            <tr class="po-row clickable" data-status="pending"><td>PO-1051</td><td>Al-Madina Meat Suppliers</td><td>Aug 1</td><td>6 items</td><td><span class="badge amber">Pending approval</span></td><td class="text-right">Rs 41,000</td><td><button class="btn btn-secondary" style="padding:5px 10px">Approve</button></td></tr>
+            <tr class="po-row clickable" data-status="draft"><td>PO-1050</td><td>Fresh Valley Produce</td><td>Jul 31</td><td>4 items</td><td><span class="badge neutral">Draft</span></td><td class="text-right">Rs 15,600</td><td><button class="btn btn-secondary" style="padding:5px 10px">Edit</button></td></tr>
+            <tr class="po-row clickable" data-status="approved"><td>PO-1049</td><td>Crescent Beverages Ltd</td><td>Jul 30</td><td>8 items</td><td><span class="badge blue">Approved</span></td><td class="text-right">Rs 62,300</td><td><button class="btn btn-secondary" style="padding:5px 10px">Receive</button></td></tr>
+            <tr class="po-row clickable" data-status="received"><td>PO-1048</td><td>Packrite Solutions</td><td>Jul 28</td><td>3 items</td><td><span class="badge green">Received</span></td><td class="text-right">Rs 22,900</td><td></td></tr>
+            <tr class="po-row clickable" data-status="received"><td>PO-1047</td><td>Al-Madina Meat Suppliers</td><td>Jul 25</td><td>5 items</td><td><span class="badge green">Received</span></td><td class="text-right">Rs 38,750</td><td></td></tr>
+            <tr class="po-row clickable" data-status="cancelled"><td>PO-1046</td><td>Fresh Valley Produce</td><td>Jul 22</td><td>2 items</td><td><span class="badge red">Cancelled</span></td><td class="text-right">Rs 6,200</td><td></td></tr>
+            <tr class="po-row clickable" data-status="pending"><td>PO-1045</td><td>Crescent Beverages Ltd</td><td>Jul 20</td><td>7 items</td><td><span class="badge amber">Pending approval</span></td><td class="text-right">Rs 54,100</td><td><button class="btn btn-secondary" style="padding:5px 10px">Approve</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- New PO Modal -->
+  <div class="modal-overlay" id="modal-new-po">
+    <div class="modal-box wide">
+      <div class="modal-header"><div class="modal-title">Create purchase order</div><div class="modal-close" onclick="closeModal('modal-new-po')">✕</div></div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Supplier</label><input class="form-input" placeholder="Select supplier"></div>
+          <div class="form-group"><label class="form-label">Expected delivery</label><input class="form-input" type="date"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:10px"><label class="form-label">Items</label></div>
+        <table class="data-table" style="margin-bottom:14px">
+          <thead><tr><th>Item</th><th>Qty</th><th>Unit cost</th><th class="text-right">Subtotal</th></tr></thead>
+          <tbody>
+            <tr><td>Chicken breast (kg)</td><td>40</td><td>Rs 620</td><td class="text-right">Rs 24,800</td></tr>
+            <tr><td>Cooking oil (5L can)</td><td>10</td><td>Rs 1,620</td><td class="text-right">Rs 16,200</td></tr>
+          </tbody>
+        </table>
+        <button class="btn btn-secondary" style="margin-bottom:16px">+ Add item</button>
+        <div class="cart-row total"><span>Order total</span><span>Rs 41,000</span></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-new-po')">Save as draft</button>
+        <button class="btn btn-primary" onclick="closeModal('modal-new-po')">Submit for approval</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ ACCOUNTING ══════ -->
+  <div class="screen-section" id="screen-accounting">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Accounting</div>
+          <div class="page-sub">Main Branch · July 2026</div>
+        </div>
+        <button class="btn btn-primary">+ New entry</button>
+      </div>
+
+      <div class="section-tabs">
+        <button class="tab active" data-tab="dashboard" onclick="showAcctTab('dashboard')">Dashboard</button>
+        <button class="tab" data-tab="transactions" onclick="showAcctTab('transactions')">Transactions</button>
+        <button class="tab" data-tab="invoices" onclick="showAcctTab('invoices')">Invoices</button>
+        <button class="tab" data-tab="expenses" onclick="showAcctTab('expenses')">Expenses</button>
+        <button class="tab" data-tab="journal" onclick="showAcctTab('journal')">Journal</button>
+      </div>
+
+      <div id="acct-dashboard" class="tab-panel active">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Revenue (MTD)</div><div class="kpi-value">Rs 2.84M</div><div class="kpi-change up">↑ 11.2%</div></div>
+          <div class="kpi-card"><div class="kpi-label">Expenses (MTD)</div><div class="kpi-value">Rs 1.61M</div><div class="kpi-change down">↑ 4.8%</div></div>
+          <div class="kpi-card"><div class="kpi-label">Net profit</div><div class="kpi-value">Rs 1.23M</div><div class="kpi-change up">↑ 18.6%</div></div>
+          <div class="kpi-card"><div class="kpi-label">Unpaid invoices</div><div class="kpi-value">Rs 148K</div><div class="kpi-change down">6 invoices</div></div>
+        </div>
+        <div class="content-grid" style="grid-template-columns:1fr 1fr">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Income vs. Expense</div></div>
+            <div class="chart-wrap">
+              <div class="chart-bars">
+                <div class="bar-group"><div class="bar" style="height:80%"></div><div class="bar-label">Mon</div></div>
+                <div class="bar-group"><div class="bar alt" style="height:55%"></div><div class="bar-label">Tue</div></div>
+                <div class="bar-group"><div class="bar" style="height:92%"></div><div class="bar-label">Wed</div></div>
+                <div class="bar-group"><div class="bar alt" style="height:48%"></div><div class="bar-label">Thu</div></div>
+                <div class="bar-group"><div class="bar" style="height:100%"></div><div class="bar-label">Fri</div></div>
+                <div class="bar-group"><div class="bar alt" style="height:70%"></div><div class="bar-label">Sat</div></div>
+                <div class="bar-group"><div class="bar" style="height:64%"></div><div class="bar-label">Sun</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Expense breakdown</div></div>
+            <div class="alert-list">
+              <div class="alert-item"><div class="alert-dot" style="background:var(--accent)"></div><div><div class="alert-msg">Raw materials</div><div class="alert-time">Rs 890,000 · 55%</div></div></div>
+              <div class="alert-item"><div class="alert-dot" style="background:var(--blue)"></div><div><div class="alert-msg">Payroll</div><div class="alert-time">Rs 420,000 · 26%</div></div></div>
+              <div class="alert-item"><div class="alert-dot" style="background:var(--amber)"></div><div><div class="alert-msg">Utilities & rent</div><div class="alert-time">Rs 210,000 · 13%</div></div></div>
+              <div class="alert-item"><div class="alert-dot" style="background:var(--text-3)"></div><div><div class="alert-msg">Other</div><div class="alert-time">Rs 90,000 · 6%</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="acct-transactions" class="tab-panel">
+        <div class="toolbar">
+          <select class="filter-select"><option>All types</option><option>Sales</option><option>Purchases</option><option>Refunds</option></select>
+          <select class="filter-select"><option>This month</option><option>Last month</option><option>Custom range</option></select>
+        </div>
+        <div class="panel">
+          <table class="data-table">
+            <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Account</th><th class="text-right">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>Aug 1</td><td>POS sales — Order #4821</td><td><span class="badge green">Credit</span></td><td>Sales revenue</td><td class="text-right">+Rs 2,140</td></tr>
+              <tr><td>Jul 31</td><td>Purchase — PO-1050</td><td><span class="badge red">Debit</span></td><td>Inventory</td><td class="text-right">−Rs 15,600</td></tr>
+              <tr><td>Jul 30</td><td>Payroll disbursement</td><td><span class="badge red">Debit</span></td><td>Payroll expense</td><td class="text-right">−Rs 420,000</td></tr>
+              <tr><td>Jul 29</td><td>POS sales — Daily total</td><td><span class="badge green">Credit</span></td><td>Sales revenue</td><td class="text-right">+Rs 94,300</td></tr>
+              <tr><td>Jul 28</td><td>Refund — Order #4690</td><td><span class="badge amber">Refund</span></td><td>Sales revenue</td><td class="text-right">−Rs 1,240</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="acct-invoices" class="tab-panel">
+        <div class="panel">
+          <table class="data-table">
+            <thead><tr><th>Invoice #</th><th>Party</th><th>Issued</th><th>Due</th><th>Status</th><th class="text-right">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>INV-2211</td><td>Al-Madina Meat Suppliers</td><td>Jul 29</td><td>Aug 13</td><td><span class="status-pill pending">Unpaid</span></td><td class="text-right">Rs 34,200</td></tr>
+              <tr><td>INV-2205</td><td>Corporate catering — TechHub</td><td>Jul 26</td><td>Aug 2</td><td><span class="status-pill pending">Unpaid</span></td><td class="text-right">Rs 68,000</td></tr>
+              <tr><td>INV-2198</td><td>Crescent Beverages Ltd</td><td>Jul 20</td><td>Aug 4</td><td><span class="status-pill paid">Paid</span></td><td class="text-right">Rs 22,100</td></tr>
+              <tr><td>INV-2190</td><td>Corporate catering — Bank Al Falah</td><td>Jul 12</td><td>Jul 27</td><td><span class="status-pill pending">Overdue</span></td><td class="text-right">Rs 46,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="acct-expenses" class="tab-panel">
+        <div class="page-header" style="margin-bottom:16px">
+          <div class="page-sub">Rs 1,610,000 recorded this month</div>
+          <button class="btn btn-secondary">+ Log expense</button>
+        </div>
+        <div class="panel">
+          <table class="data-table">
+            <thead><tr><th>Date</th><th>Category</th><th>Vendor / note</th><th>Branch</th><th class="text-right">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>Jul 30</td><td>Payroll</td><td>July salaries</td><td>All branches</td><td class="text-right">Rs 420,000</td></tr>
+              <tr><td>Jul 28</td><td>Utilities</td><td>K-Electric bill</td><td>Main Branch</td><td class="text-right">Rs 62,400</td></tr>
+              <tr><td>Jul 27</td><td>Maintenance</td><td>Kitchen exhaust repair</td><td>Downtown Branch</td><td class="text-right">Rs 18,500</td></tr>
+              <tr><td>Jul 24</td><td>Rent</td><td>Monthly rent — Blue Area</td><td>Main Branch</td><td class="text-right">Rs 150,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="acct-journal" class="tab-panel">
+        <div class="journal-entry">
+          <div class="journal-head"><span>JE-0341 · Aug 1, 2026</span><span>POS daily settlement</span></div>
+          <table class="data-table journal-lines">
+            <thead><tr><th>Account</th><th>Debit</th><th class="text-right">Credit</th></tr></thead>
+            <tbody>
+              <tr><td>Cash / bank</td><td>Rs 94,300</td><td class="text-right">—</td></tr>
+              <tr><td>Sales revenue</td><td>—</td><td class="text-right">Rs 94,300</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="journal-entry">
+          <div class="journal-head"><span>JE-0340 · Jul 31, 2026</span><span>Inventory purchase — PO-1050</span></div>
+          <table class="data-table journal-lines">
+            <thead><tr><th>Account</th><th>Debit</th><th class="text-right">Credit</th></tr></thead>
+            <tbody>
+              <tr><td>Inventory</td><td>Rs 15,600</td><td class="text-right">—</td></tr>
+              <tr><td>Accounts payable</td><td>—</td><td class="text-right">Rs 15,600</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ EMPLOYEE MANAGEMENT ══════ -->
+  <div class="screen-section" id="screen-employees">
+    <div class="page">
+
+      <div id="employees-list-view">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Employees</div>
+            <div class="page-sub">27 employees across 2 branches</div>
+          </div>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Add employee
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-search">
+            <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="position:absolute;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search employees...">
+          </div>
+          <select class="filter-select"><option>All roles</option><option>Cashier</option><option>Kitchen staff</option><option>Manager</option><option>Delivery rider</option></select>
+          <select class="filter-select"><option>All branches</option><option>Main Branch</option><option>Downtown Branch</option></select>
+        </div>
+
+        <div class="panel">
+          <table class="data-table">
+            <thead><tr><th>Employee</th><th>Role</th><th>Branch</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+            <tbody>
+              <tr class="clickable" onclick="showEmpProfile('emp1')">
+                <td><div class="row-avatar"><div class="avatar">SW</div><div><div class="name">Sarah Waqas</div></div></div></td>
+                <td>Cashier</td><td>Main Branch</td><td><span class="badge green">On shift</span></td><td>Mar 2024</td>
+                <td><button class="btn btn-secondary" style="padding:5px 10px" onclick="event.stopPropagation();showEmpProfile('emp1')">View</button></td>
+              </tr>
+              <tr class="clickable" onclick="showEmpProfile('emp1')">
+                <td><div class="row-avatar"><div class="avatar">HB</div><div><div class="name">Hamza Baig</div></div></div></td>
+                <td>Kitchen staff</td><td>Main Branch</td><td><span class="badge green">On shift</span></td><td>Jan 2024</td>
+                <td><button class="btn btn-secondary" style="padding:5px 10px" onclick="event.stopPropagation();showEmpProfile('emp1')">View</button></td>
+              </tr>
+              <tr class="clickable" onclick="showEmpProfile('emp1')">
+                <td><div class="row-avatar"><div class="avatar">NA</div><div><div class="name">Noor Aslam</div></div></div></td>
+                <td>Manager</td><td>Downtown Branch</td><td><span class="badge neutral">Off duty</span></td><td>Aug 2023</td>
+                <td><button class="btn btn-secondary" style="padding:5px 10px" onclick="event.stopPropagation();showEmpProfile('emp1')">View</button></td>
+              </tr>
+              <tr class="clickable" onclick="showEmpProfile('emp1')">
+                <td><div class="row-avatar"><div class="avatar">KJ</div><div><div class="name">Kashif Javed</div></div></div></td>
+                <td>Delivery rider</td><td>Main Branch</td><td><span class="badge amber">On leave</span></td><td>Nov 2024</td>
+                <td><button class="btn btn-secondary" style="padding:5px 10px" onclick="event.stopPropagation();showEmpProfile('emp1')">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="employees-profile-view" style="display:none">
+        <div class="back-link" onclick="showEmpListView()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          Back to employees
+        </div>
+        <div class="profile-header">
+          <div class="profile-avatar-lg">SW</div>
+          <div>
+            <div class="profile-name">Sarah Waqas</div>
+            <div class="profile-meta"><span>Cashier · Main Branch</span><span>+92 302 1198877</span><span class="badge green">On shift</span></div>
+          </div>
+          <div class="profile-stats">
+            <div class="profile-stat"><div class="val">96%</div><div class="lbl">Attendance</div></div>
+            <div class="profile-stat"><div class="val">2</div><div class="lbl">Leave left</div></div>
+            <div class="profile-stat"><div class="val">Rs 42,000</div><div class="lbl">Monthly salary</div></div>
+          </div>
+          <div class="profile-actions"><button class="btn btn-secondary">Edit</button></div>
+        </div>
+
+        <div class="section-tabs">
+          <button class="tab active" data-tab="profile" onclick="showEmpTab('profile')">Profile</button>
+          <button class="tab" data-tab="attendance" onclick="showEmpTab('attendance')">Attendance</button>
+          <button class="tab" data-tab="shifts" onclick="showEmpTab('shifts')">Shifts</button>
+          <button class="tab" data-tab="leave" onclick="showEmpTab('leave')">Leave</button>
+          <button class="tab" data-tab="payroll" onclick="showEmpTab('payroll')">Payroll</button>
+        </div>
+
+        <div id="emp-profile" class="tab-panel active">
+          <div class="panel">
+            <div style="padding:18px 20px">
+              <div class="cart-row"><span>Employee ID</span><span>UPL-EMP-0142</span></div>
+              <div class="cart-row"><span>Email</span><span>sarah.waqas@uplynk.pk</span></div>
+              <div class="cart-row"><span>CNIC</span><span>xxxxx-xxxxxxx-x</span></div>
+              <div class="cart-row"><span>Date joined</span><span>Mar 12, 2024</span></div>
+              <div class="cart-row"><span>Emergency contact</span><span>+92 300 5544332</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="emp-attendance" class="tab-panel">
+          <div class="panel">
+            <div class="attendance-row"><div class="attendance-day">Fri, Aug 1</div><span class="badge green">Present</span><div class="attendance-time">9:02 AM – 6:05 PM</div></div>
+            <div class="attendance-row"><div class="attendance-day">Thu, Jul 31</div><span class="badge green">Present</span><div class="attendance-time">8:58 AM – 6:00 PM</div></div>
+            <div class="attendance-row"><div class="attendance-day">Wed, Jul 30</div><span class="badge amber">Late</span><div class="attendance-time">9:34 AM – 6:10 PM</div></div>
+            <div class="attendance-row"><div class="attendance-day">Tue, Jul 29</div><span class="badge red">Absent</span><div class="attendance-time">—</div></div>
+            <div class="attendance-row"><div class="attendance-day">Mon, Jul 28</div><span class="badge green">Present</span><div class="attendance-time">9:00 AM – 6:02 PM</div></div>
+          </div>
+        </div>
+
+        <div id="emp-shifts" class="tab-panel">
+          <div class="panel">
+            <table class="data-table">
+              <thead><tr><th>Day</th><th>Shift</th><th>Time</th><th>Branch</th></tr></thead>
+              <tbody>
+                <tr><td>Monday</td><td>Morning</td><td>9:00 AM – 6:00 PM</td><td>Main Branch</td></tr>
+                <tr><td>Tuesday</td><td>Morning</td><td>9:00 AM – 6:00 PM</td><td>Main Branch</td></tr>
+                <tr><td>Wednesday</td><td>Off</td><td>—</td><td>—</td></tr>
+                <tr><td>Thursday</td><td>Morning</td><td>9:00 AM – 6:00 PM</td><td>Main Branch</td></tr>
+                <tr><td>Friday</td><td>Evening</td><td>2:00 PM – 11:00 PM</td><td>Main Branch</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="emp-leave" class="tab-panel">
+          <div class="panel">
+            <table class="data-table">
+              <thead><tr><th>Type</th><th>Dates</th><th>Days</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Sick leave</td><td>Jul 29</td><td>1</td><td><span class="status-pill paid">Approved</span></td></tr>
+                <tr><td>Annual leave</td><td>Aug 15 – 17</td><td>3</td><td><span class="status-pill pending">Pending</span></td></tr>
+                <tr><td>Casual leave</td><td>Jun 10</td><td>1</td><td><span class="status-pill paid">Approved</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="emp-payroll" class="tab-panel">
+          <div class="panel">
+            <table class="data-table">
+              <thead><tr><th>Month</th><th>Base salary</th><th>Deductions</th><th>Bonus</th><th class="text-right">Net paid</th></tr></thead>
+              <tbody>
+                <tr><td>July 2026</td><td>Rs 42,000</td><td>Rs 1,200</td><td>Rs 0</td><td class="text-right">Rs 40,800</td></tr>
+                <tr><td>June 2026</td><td>Rs 42,000</td><td>Rs 0</td><td>Rs 3,000</td><td class="text-right">Rs 45,000</td></tr>
+                <tr><td>May 2026</td><td>Rs 42,000</td><td>Rs 800</td><td>Rs 0</td><td class="text-right">Rs 41,200</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ AUDIT LOGS ══════ -->
+  <div class="screen-section" id="screen-audit-logs">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Audit Logs</div>
+          <div class="page-sub">Activity history across all branches</div>
+        </div>
+        <button class="btn btn-secondary">Export CSV</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-search">
+          <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="position:absolute;top:50%;transform:translateY(-50%)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search by user or action...">
+        </div>
+        <select class="filter-select"><option>All users</option><option>Sarah Waqas</option><option>Noor Aslam</option><option>System</option></select>
+        <select class="filter-select"><option>All actions</option><option>Create</option><option>Update</option><option>Delete</option><option>Login</option><option>Approval</option></select>
+        <select class="filter-select"><option>All branches</option><option>Main Branch</option><option>Downtown Branch</option></select>
+      </div>
+
+      <div class="panel">
+        <table class="data-table">
+          <thead><tr><th>User</th><th>Action</th><th>Details</th><th>Branch</th><th>Date & time</th></tr></thead>
+          <tbody>
+            <tr><td><div class="row-avatar"><div class="avatar">NA</div><div class="name">Noor Aslam</div></div></td><td><span class="badge blue">Approval</span></td><td>Approved PO-1051 (Rs 41,000)</td><td>Downtown Branch</td><td>Today, 2:14 PM</td></tr>
+            <tr><td><div class="row-avatar"><div class="avatar">SW</div><div class="name">Sarah Waqas</div></div></td><td><span class="badge green">Create</span></td><td>Created reservation for Sana Fatima</td><td>Main Branch</td><td>Today, 1:02 PM</td></tr>
+            <tr><td><div class="row-avatar"><div class="avatar">HB</div><div class="name">Hamza Baig</div></div></td><td><span class="badge neutral">Login</span></td><td>Signed in from POS terminal 2</td><td>Main Branch</td><td>Today, 9:01 AM</td></tr>
+            <tr><td><div class="row-avatar"><div class="avatar">S</div><div class="name">System</div></div></td><td><span class="badge amber">Update</span></td><td>Auto-flagged chicken breast as low stock</td><td>Main Branch</td><td>Today, 6:00 AM</td></tr>
+            <tr><td><div class="row-avatar"><div class="avatar">NA</div><div class="name">Noor Aslam</div></div></td><td><span class="badge red">Delete</span></td><td>Removed menu item "Seasonal Salad"</td><td>Downtown Branch</td><td>Yesterday, 5:47 PM</td></tr>
+            <tr><td><div class="row-avatar"><div class="avatar">KJ</div><div class="name">Kashif Javed</div></div></td><td><span class="badge green">Create</span></td><td>Submitted leave request (Aug 15–17)</td><td>Main Branch</td><td>Yesterday, 11:20 AM</td></tr>
+            <tr><td><div class="row-avatar"><div class="avatar">SW</div><div class="name">Sarah Waqas</div></div></td><td><span class="badge blue">Update</span></td><td>Edited customer profile — Ayesha Khan</td><td>Main Branch</td><td>Jul 30, 4:12 PM</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ EMPTY STATES ══════ -->
+  <div class="screen-section" id="screen-empty-orders">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">🧾</div>
+        <div class="state-title">No orders yet</div>
+        <div class="state-desc">You haven't received any orders today. When new orders come in, they will appear here.</div>
+        <button class="btn btn-primary" onclick="showScreen('pos')">Go to POS</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-empty-inventory">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">📦</div>
+        <div class="state-title">Inventory is empty</div>
+        <div class="state-desc">Start adding items to your inventory to track stock levels and receive low-stock alerts.</div>
+        <button class="btn btn-primary">Add first item</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-empty-reports">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">📊</div>
+        <div class="state-title">No data to display</div>
+        <div class="state-desc">There is not enough data to generate this report. Try selecting a different date range.</div>
+        <button class="btn btn-secondary">Clear filters</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ ERROR STATES ══════ -->
+  <div class="screen-section" id="screen-error-404">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">🔍</div>
+        <div class="state-title">Page not found (404)</div>
+        <div class="state-desc">The module or record you are looking for does not exist or has been removed.</div>
+        <button class="btn btn-primary" onclick="showScreen('dashboard')">Back to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-error-500">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">⚠️</div>
+        <div class="state-title">Server error (500)</div>
+        <div class="state-desc">Something went wrong on our end. We're looking into it. Please try again in a few minutes.</div>
+        <button class="btn btn-secondary">Retry</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-error-offline">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">🌐</div>
+        <div class="state-title">You are offline</div>
+        <div class="state-desc">Please check your internet connection. We'll automatically reconnect you when you're back online.</div>
+        <button class="btn btn-primary">Try reconnecting</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-section" id="screen-error-permission">
+    <div class="page">
+      <div class="state-container">
+        <div class="state-icon">🔒</div>
+        <div class="state-title">Permission denied</div>
+        <div class="state-desc">You do not have the required role to access this module. Please contact your branch manager.</div>
+        <button class="btn btn-secondary" onclick="showScreen('dashboard')">Go back</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══════ DEMO CONTROLS ══════ -->
+<div class="demo-controls" id="demoControls">
+  <div class="demo-header" onclick="this.parentElement.classList.toggle('pinned')">
+    Demo Controls
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+  </div>
+  <div class="demo-section">
+    <div class="demo-label">Role Dashboard</div>
+    <select class="demo-select" onchange="showScreen(this.value)">
+      <option value="dashboard">Owner (Current)</option>
+      <option value="dashboard-manager">Manager</option>
+      <option value="dashboard-cashier">Cashier</option>
+      <option value="dashboard-kitchen">Kitchen Staff</option>
+    </select>
+  </div>
+  <div class="demo-section">
+    <div class="demo-label">Empty States</div>
+    <select class="demo-select" onchange="if(this.value) showScreen(this.value); this.value=''">
+      <option value="">Select state...</option>
+      <option value="empty-orders">No Orders</option>
+      <option value="empty-inventory">No Inventory</option>
+      <option value="empty-reports">No Reports</option>
+    </select>
+  </div>
+  <div class="demo-section" style="margin-bottom:0">
+    <div class="demo-label">Error States</div>
+    <select class="demo-select" style="margin-bottom:0" onchange="if(this.value) showScreen(this.value); this.value=''">
+      <option value="">Select error...</option>
+      <option value="error-404">404 Not Found</option>
+      <option value="error-500">500 Server Error</option>
+      <option value="error-offline">Offline</option>
+      <option value="error-permission">Permission Denied</option>
+    </select>
+  </div>
+</div>
+
+<script>
+  function showScreen(name) {
+    document.querySelectorAll('.screen-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const el = document.getElementById('screen-' + name);
+    if (el) el.classList.add('active');
+
+    const titles = {
+      dashboard: 'Dashboard',
+      pos: 'Point of Sale',
+      kitchen: 'Kitchen',
+      inventory: 'Inventory',
+      reports: 'Reports',
+      settings: 'Settings',
+      customers: 'Customers',
+      reservations: 'Reservations',
+      tables: 'Table Management',
+      suppliers: 'Suppliers',
+      'purchase-orders': 'Purchase Orders',
+      accounting: 'Accounting',
+      employees: 'Employees',
+      'audit-logs': 'Audit Logs'
+    };
+    document.getElementById('topbar-title').textContent = titles[name] || name;
+
+    // Activate correct nav item
+    const navMap = {
+      dashboard: 0,
+      pos: 1,
+      customers: 2,
+      reservations: 3,
+      kitchen: 4,
+      inventory: 5,
+      tables: 7,
+      suppliers: 8,
+      'purchase-orders': 9,
+      accounting: 11,
+      employees: 12,
+      reports: 15,
+      settings: 16,
+      'audit-logs': 18
+    };
+    const items = document.querySelectorAll('.nav-item');
+    if (items[navMap[name]]) items[navMap[name]].classList.add('active');
+
+    // POS needs full height
+    document.querySelector('.page, .pos-layout, .settings-layout');
+    if (name === 'pos') {
+      document.querySelector('.main').style.overflow = 'hidden';
+    } else {
+      document.querySelector('.main').style.overflow = '';
+    }
+  }
+
+  // Toggle switches
+  document.querySelectorAll('.toggle-switch').forEach(t => {
+    t.addEventListener('click', () => t.classList.toggle('off'));
+  });
+
+  // Settings nav
+  document.querySelectorAll('.settings-nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // Category pills
+  document.querySelectorAll('.cat-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+    });
+  });
+
+  // Pay method buttons
+  document.querySelectorAll('.pay-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  /* ══════ WP2 HELPERS ══════ */
+
+  // Generic modal open/close
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // Generic tab-group switcher: pass container id, tab button clicked, and panel-name to reveal
+  function switchTab(groupSelector, btn, panelId) {
+    const group = btn.closest(groupSelector);
+    group.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const panelsWrap = group.parentElement;
+    panelsWrap.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+  }
+
+  // Accounting module tabs
+  function showAcctTab(tab) {
+    document.querySelectorAll('#screen-accounting .tab').forEach(t => t.classList.remove('active'));
+    const btn = document.querySelector('#screen-accounting .tab[data-tab="' + tab + '"]');
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('#screen-accounting .tab-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('acct-' + tab);
+    if (panel) panel.classList.add('active');
+  }
+
+  // Customer profile view toggle
+  function showCustomerProfile(id) {
+    document.getElementById('customers-list-view').style.display = 'none';
+    document.getElementById('customers-profile-view').style.display = 'block';
+  }
+  function showCustomerList() {
+    document.getElementById('customers-profile-view').style.display = 'none';
+    document.getElementById('customers-list-view').style.display = 'block';
+  }
+  function showCustTab(tab) {
+    document.querySelectorAll('#customers-profile-view .tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('#customers-profile-view .tab[data-tab="' + tab + '"]').classList.add('active');
+    document.querySelectorAll('#customers-profile-view .tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('cust-' + tab).classList.add('active');
+  }
+
+  // Supplier profile view toggle
+  function showSupplierProfile(id) {
+    document.getElementById('suppliers-list-view').style.display = 'none';
+    document.getElementById('suppliers-profile-view').style.display = 'block';
+  }
+  function showSupplierList() {
+    document.getElementById('suppliers-profile-view').style.display = 'none';
+    document.getElementById('suppliers-list-view').style.display = 'block';
+  }
+
+  // Employee list/profile toggle + tabs
+  function showEmpListView() {
+    document.getElementById('employees-profile-view').style.display = 'none';
+    document.getElementById('employees-list-view').style.display = 'block';
+  }
+  function showEmpProfile(id) {
+    document.getElementById('employees-list-view').style.display = 'none';
+    document.getElementById('employees-profile-view').style.display = 'block';
+  }
+  function showEmpTab(tab) {
+    document.querySelectorAll('#employees-profile-view .tab').forEach(t => t.classList.remove('active'));
+    const btn = document.querySelector('#employees-profile-view .tab[data-tab="' + tab + '"]');
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('#employees-profile-view .tab-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('emp-' + tab);
+    if (panel) panel.classList.add('active');
+  }
+
+  // Purchase Orders status filter tabs
+  function filterPO(status, btn) {
+    document.querySelectorAll('#screen-purchase-orders .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.po-row').forEach(row => {
+      row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+    });
+  }
+
+  // Table Management: cycle a table's status when clicked (demo)
+  const tableStatusCycle = ['available', 'occupied', 'reserved', 'cleaning'];
+  function cycleTableStatus(el) {
+    const current = tableStatusCycle.findIndex(s => el.classList.contains(s));
+    el.classList.remove(...tableStatusCycle);
+    const next = tableStatusCycle[(current + 1) % tableStatusCycle.length];
+    el.classList.add(next);
+    const label = el.querySelector('.floor-table-status');
+    if (label) label.textContent = next.charAt(0).toUpperCase() + next.slice(1);
+  }
+
+  // Reservations: switch between calendar and list view
+  function showResView(view) {
+    document.querySelectorAll('#screen-reservations .res-view-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('#screen-reservations .res-view-btn[data-view="' + view + '"]').classList.add('active');
+    document.getElementById('res-calendar-view').style.display = view === 'calendar' ? 'block' : 'none';
+    document.getElementById('res-list-view').style.display = view === 'list' ? 'block' : 'none';
+  }
+</script>
+</body>
+</html>
