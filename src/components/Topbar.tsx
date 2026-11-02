@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search, ChevronDown, Bell } from 'lucide-react';
 
 export default function Topbar() {
@@ -37,3 +36,4 @@ export default function Topbar() {
     </header>
   );
 }
+
