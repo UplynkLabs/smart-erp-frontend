@@ -1,179 +1,117 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { apiRequest, createRecord, getList, getSession } from '../services/api';
 
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  emoji: string;
-  category: string;
-};
-
+type Product = { menuItemId: string; name: string; price: number; categoryName: string; taxRate?: number | null };
 type CartItem = Product & { qty: number };
-
-const MENU_ITEMS: Product[] = [
-  { id: '1', name: 'Chicken Burger', price: 480, emoji: '🍔', category: 'Burgers' },
-  { id: '2', name: 'Margherita Pizza', price: 950, emoji: '🍕', category: 'Pizza' },
-  { id: '3', name: 'Zinger Meal', price: 620, emoji: '🍗', category: 'Chicken' },
-  { id: '4', name: 'Pepsi 500ml', price: 120, emoji: '🥤', category: 'Drinks' },
-  { id: '5', name: 'Fries (Large)', price: 250, emoji: '🍟', category: 'Sides' },
-  { id: '6', name: 'Brownie', price: 320, emoji: '🍰', category: 'Desserts' },
-  { id: '7', name: 'Latte', price: 380, emoji: '☕', category: 'Drinks' },
-  { id: '8', name: 'Caesar Salad', price: 550, emoji: '🥗', category: 'Sides' },
-  { id: '9', name: 'Combo Meal A', price: 850, emoji: '🍱', category: 'Burgers' },
-];
-
-const CATEGORIES = ['All items', 'Burgers', 'Pizza', 'Chicken', 'Drinks', 'Desserts', 'Sides'];
-const PAYMENT_METHODS = ['Cash', 'Card', 'JazzCash'];
+type Shift = { id: string; status: string; openingFloat: number };
+type Order = { orderId: string; orderNumber: string; total: number; amountDue: number };
+type Payment = { invoiceNumber?: string; changeDue?: number | null; orderStatus: string };
+const money = (value: number) => `PKR ${value.toLocaleString('en-PK', { maximumFractionDigits: 2 })}`;
+const ORDER_TYPES = [{ label: 'Dine in', value: 0 }, { label: 'Takeaway', value: 1 }, { label: 'Delivery', value: 2 }];
 
 export default function POS() {
+  const [menu, setMenu] = useState<Product[]>([]);
   const [activeCategory, setActiveCategory] = useState('All items');
+  const [orderType, setOrderType] = useState(0);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const [shift, setShift] = useState<Shift | null>(null);
+  const [shiftLoading, setShiftLoading] = useState(true);
+  const [openingFloat, setOpeningFloat] = useState('0');
+  const [closingCash, setClosingCash] = useState('0');
+  const [showCloseShift, setShowCloseShift] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [pendingOrder, setPendingOrder] = useState<Order | null>(null);
+  const canCloseShift = getSession()?.permissions.includes('pos.shift.close') ?? false;
 
-  const filteredMenu = activeCategory === 'All items' 
-    ? MENU_ITEMS 
-    : MENU_ITEMS.filter(item => item.category === activeCategory);
+  const loadShift = async () => {
+    setShiftLoading(true);
+    try { setShift(await apiRequest<Shift>('/api/v1/pos/shifts/current')); }
+    catch { setShift(null); }
+    finally { setShiftLoading(false); }
+  };
+
+  useEffect(() => {
+    let active = true;
+    void getList<Product>('/api/v1/menu/items').then((items) => { if (active) setMenu(items); }).catch((e: unknown) => { if (active) setError(e instanceof Error ? e.message : 'Could not load the menu.'); });
+    void loadShift();
+    return () => { active = false; };
+  }, []);
+
+  const categories = useMemo(() => ['All items', ...new Set(menu.map((item) => item.categoryName))], [menu]);
+  const filteredMenu = activeCategory === 'All items' ? menu : menu.filter((item) => item.categoryName === activeCategory);
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const estimatedTax = Math.round(subtotal * 0.16 * 100) / 100;
+  const estimatedTotal = subtotal + estimatedTax;
 
   const addToCart = (product: Product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
-      if (existing) {
-        return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
-      }
-      return [...prev, { ...product, qty: 1 }];
+    setError(''); setMessage(''); setInvoiceNumber('');
+    setCart((previous) => {
+      const existing = previous.find((item) => item.menuItemId === product.menuItemId);
+      return existing ? previous.map((item) => item.menuItemId === product.menuItemId ? { ...item, qty: item.qty + 1 } : item) : [...previous, { ...product, qty: 1 }];
     });
   };
 
-  const updateQty = (id: string, delta: number) => {
-    setCart(prev => prev.map(item => {
-      if (item.id === id) {
-        const newQty = item.qty + delta;
-        return { ...item, qty: newQty > 0 ? newQty : 0 };
-      }
-      return item;
-    }).filter(item => item.qty > 0));
+  const updateQty = (id: string, delta: number) => setCart((previous) => previous.map((item) => item.menuItemId === id ? { ...item, qty: item.qty + delta } : item).filter((item) => item.qty > 0));
+
+  const openShift = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); setIsProcessing(true); setError('');
+    try {
+      const opened = await createRecord<Shift>('/api/v1/pos/shifts/open', { openingFloat: Number(openingFloat) });
+      setShift(opened); setMessage('Your register shift is open.');
+    } catch (e) { setError(e instanceof Error ? e.message : 'Could not open the register shift.'); }
+    finally { setIsProcessing(false); }
   };
 
-  const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-  const tax = Math.round(subtotal * 0.17);
-  const total = subtotal + tax;
+  const closeShift = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); if (!shift) return;
+    setIsProcessing(true); setError(''); setMessage('');
+    try {
+      const closed = await apiRequest<{ expectedCash: number; cashVariance: number }>(`/api/v1/pos/shifts/${shift.id}/close`, { method: 'POST', body: JSON.stringify({ closingCashCounted: Number(closingCash) }) });
+      setShift(null); setShowCloseShift(false);
+      setMessage(`Shift closed. Expected ${money(closed.expectedCash)} · variance ${money(closed.cashVariance)}.`);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Could not close this shift.'); }
+    finally { setIsProcessing(false); }
+  };
 
-  const handleCharge = () => {
-    if (cart.length === 0) return;
+  const handleCharge = async () => {
+    if (!cart.length || isProcessing) return;
+    setError(''); setMessage(''); setInvoiceNumber('');
+    if (!shift) { setError('Open a register shift before taking orders.'); return; }
+    if (paymentMethod !== 'Cash') { setError('Card and online settlement are not configured yet. Choose cash to complete this sale.'); return; }
     setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setIsSuccess(true);
-      setTimeout(() => {
-        setIsSuccess(false);
-        setCart([]);
-      }, 3000);
-    }, 1500);
+    try {
+      const order = pendingOrder ?? await createRecord<Order>('/api/v1/pos/orders', {
+        orderType, clientTransactionId: crypto.randomUUID(), items: cart.map((item) => ({ menuItemId: item.menuItemId, quantity: item.qty })),
+      });
+      if (!pendingOrder) setPendingOrder(order);
+      const payment = await createRecord<Payment>(`/api/v1/pos/orders/${order.orderId}/payments`, { method: 0, amount: Number(order.amountDue || order.total), amountTendered: Number(order.amountDue || order.total), clientTransactionId: crypto.randomUUID() });
+      setInvoiceNumber(payment.invoiceNumber ?? order.orderNumber);
+      setMessage(`${order.orderNumber} paid. ${payment.changeDue ? `Change due ${money(payment.changeDue)}.` : ''}`);
+      setCart([]); setPendingOrder(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not complete the sale.');
+    } finally { setIsProcessing(false); }
   };
 
-  return (
-    <div className="pos-layout">
-      {/* Menu Area */}
-      <div className="pos-menu">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-          <div>
-            <div style={{ fontFamily: 'var(--sans)', fontSize: '18px', fontWeight: 600, color: 'var(--text)' }}>Point of Sale</div>
-            <div style={{ fontSize: '12px', color: 'var(--text-3)' }}>Main Branch · Table / Counter</div>
-          </div>
-          <div className="branch-pill" style={{ fontSize: '11px' }}>
-            <div className="branch-dot"></div>Cashier: Admin
-          </div>
-        </div>
+  const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const visibleOrderTotal = pendingOrder?.total ?? estimatedTotal;
 
-        <div className="pos-cats" style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px' }}>
-          {CATEGORIES.map(cat => (
-            <div 
-              key={cat} 
-              className={`cat-pill ${activeCategory === cat ? 'active' : ''}`}
-              onClick={() => setActiveCategory(cat)}
-              style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}
-            >
-              {cat}
-            </div>
-          ))}
-        </div>
-
-        <div className="menu-grid">
-          {filteredMenu.map(item => (
-            <div key={item.id} className="menu-item" onClick={() => addToCart(item)}>
-              <div className="menu-item-emoji">{item.emoji}</div>
-              <div className="menu-item-name">{item.name}</div>
-              <div className="menu-item-price">PKR {item.price}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Cart Area */}
-      <div className="pos-cart">
-        <div className="cart-header">
-          Current Order
-          <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-3)' }}>Walk-in</span>
-        </div>
-        
-        <div className="cart-items">
-          {cart.length === 0 ? (
-            <div className="state-container" style={{ minHeight: '200px', height: '100%', padding: '20px' }}>
-              <div className="state-icon" style={{ fontSize: '32px', marginBottom: '12px' }}>🛒</div>
-              <div className="state-title" style={{ fontSize: '16px' }}>Cart is empty</div>
-              <div className="state-desc" style={{ fontSize: '12px' }}>Select items from the menu to add them to the cart.</div>
-            </div>
-          ) : (
-            cart.map(item => (
-              <div key={item.id} className="cart-item">
-                <div className="cart-item-name">{item.name}</div>
-                <div className="cart-qty-ctrl">
-                  <div className="qty-btn" onClick={() => updateQty(item.id, -1)}>−</div>
-                  <div className="qty-num">{item.qty}</div>
-                  <div className="qty-btn" onClick={() => updateQty(item.id, 1)}>+</div>
-                </div>
-                <div className="cart-item-price">PKR {item.price * item.qty}</div>
-              </div>
-            ))
-          )}
-        </div>
-
-        <div className="cart-footer">
-          <div className="cart-totals">
-            <div className="cart-row"><span>Subtotal</span><span>PKR {subtotal}</span></div>
-            <div className="cart-row"><span>Tax (17%)</span><span>PKR {tax}</span></div>
-            <div className="cart-row"><span>Discount</span><span style={{ color: 'var(--green)' }}>−PKR 0</span></div>
-            <div className="cart-row total"><span>Total</span><span>PKR {total}</span></div>
-          </div>
-          
-          <div className="pay-methods">
-            {PAYMENT_METHODS.map(method => (
-              <div 
-                key={method} 
-                className={`pay-btn ${paymentMethod === method ? 'active' : ''}`}
-                onClick={() => setPaymentMethod(method)}
-              >
-                {method}
-              </div>
-            ))}
-          </div>
-          
-          <button 
-            className={`charge-btn ${isSuccess ? 'success' : ''}`} 
-            onClick={handleCharge}
-            disabled={cart.length === 0 || isProcessing}
-            style={{ 
-              opacity: cart.length === 0 ? 0.5 : 1,
-              background: isSuccess ? 'var(--green)' : isProcessing ? 'var(--accent-glow)' : 'var(--accent)'
-            }}
-          >
-            {isSuccess ? 'Payment Successful!' : isProcessing ? 'Processing...' : `Charge PKR ${total}`}
-          </button>
-        </div>
-      </div>
+  return <div className="pos-layout">
+    <div className="pos-menu">
+      <div className="pos-heading"><div><h1>Point of Sale</h1><p>{shift ? 'Register shift open · Server priced checkout' : 'Open a register shift to start sales'}</p></div><div className="pos-heading-tools"><label className="order-type-select"><span>Order type</span><select value={orderType} onChange={(event) => setOrderType(Number(event.target.value))}>{ORDER_TYPES.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}</select></label>{shift && <span className="pos-live-badge"><i/>Shift open</span>}{shift && canCloseShift && <button type="button" className="module-button quiet" onClick={() => setShowCloseShift((shown) => !shown)}>Close shift</button>}</div></div>
+      {error && <div className="module-alert error" role="alert">{error}</div>}{message && <div className="module-alert success" role="status">{message}{invoiceNumber && <strong className="invoice-number"> Invoice · {invoiceNumber}</strong>}</div>}
+      {!shiftLoading && !shift && <form className="shift-open-card" onSubmit={openShift}><div><strong>Open register shift</strong><span>Enter the cash float available at the beginning of this shift.</span></div><label>Opening float <span>PKR</span><input type="number" min="0" step="0.01" value={openingFloat} onChange={(event) => setOpeningFloat(event.target.value)} required/></label><button className="module-button primary" disabled={isProcessing}>{isProcessing ? 'Opening…' : 'Open shift'}</button></form>}
+      {shift && showCloseShift && <form className="shift-open-card" onSubmit={closeShift}><div><strong>Close register shift</strong><span>Enter the cash counted in the drawer. Unsettled orders must be cleared first.</span></div><label>Cash counted <span>PKR</span><input type="number" min="0" step="0.01" value={closingCash} onChange={(event) => setClosingCash(event.target.value)} required/></label><button className="module-button primary" disabled={isProcessing}>{isProcessing ? 'Closing…' : 'Confirm close'}</button></form>}
+      {shiftLoading ? <div className="module-empty">Checking register shift…</div> : <>
+        <div className="pos-cats">{categories.map((category) => <button type="button" key={category} className={`cat-pill ${activeCategory === category ? 'active' : ''}`} onClick={() => setActiveCategory(category)}>{category}</button>)}</div>
+        {filteredMenu.length ? <div className="menu-grid">{filteredMenu.map((item) => <button key={item.menuItemId} type="button" className="menu-item" onClick={() => addToCart(item)} disabled={!shift}><span className="menu-item-emoji">{item.categoryName === 'Drinks' ? '🥤' : item.categoryName === 'Mains' ? '🍽️' : '🍴'}</span><span className="menu-item-name">{item.name}</span><span className="menu-item-price">{money(item.price)}</span><span className="menu-item-category">{item.categoryName}</span></button>)}</div> : <div className="module-empty">{error ? 'Menu is unavailable until the API is connected.' : 'No available menu items were found.'}</div>}
+      </>}
     </div>
-  );
+    <aside className="pos-cart"><div className="cart-header">Current order <span>Walk-in · {ORDER_TYPES.find((type) => type.value === orderType)?.label}</span></div><div className="cart-items">{cart.length ? cart.map((item) => <div key={item.menuItemId} className="cart-item"><div className="cart-item-name">{item.name}<small>{money(item.price)} each</small></div><div className="cart-qty-ctrl"><button type="button" className="qty-btn" aria-label={`Remove one ${item.name}`} onClick={() => updateQty(item.menuItemId, -1)}>−</button><span className="qty-num">{item.qty}</span><button type="button" className="qty-btn" aria-label={`Add one ${item.name}`} onClick={() => updateQty(item.menuItemId, 1)}>+</button></div><div className="cart-item-price">{money(item.price * item.qty)}</div></div>) : <div className="cart-empty"><div className="state-icon">🛒</div><strong>Cart is empty</strong><span>Select items from the menu to start an order.</span></div>}</div>
+      <div className="cart-footer"><div className="cart-totals"><div className="cart-row"><span>Subtotal</span><span>{money(subtotal)}</span></div><div className="cart-row"><span>Estimated tax</span><span>{money(estimatedTax)}</span></div><div className="cart-row total"><span>Estimated total</span><span>{money(visibleOrderTotal)}</span></div><small>Final tax and total are calculated by the server.</small></div><div className="pay-methods">{['Cash', 'Card', 'Online'].map((method) => <button type="button" key={method} className={`pay-btn ${paymentMethod === method ? 'active' : ''}`} onClick={() => setPaymentMethod(method)}>{method}</button>)}</div><button className="charge-btn" onClick={() => void handleCharge()} disabled={!cart.length || !shift || isProcessing}>{isProcessing ? 'Processing…' : pendingOrder ? `Complete payment · ${money(visibleOrderTotal)}` : `Charge · ${money(estimatedTotal)}`}</button></div>
+    </aside>
+  </div>;
 }
-
