@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search, ChevronDown, Bell } from 'lucide-react';
 
 export default function Topbar() {
@@ -28,7 +27,7 @@ export default function Topbar() {
             <div className="dropdown-item"><div className="branch-dot" style={{ background: 'var(--surface-3)' }}></div> Downtown Branch</div>
           </div>
         </div>
-        
+
         <div className="icon-btn">
           <Bell size={16} />
           <div className="notif-dot"></div>

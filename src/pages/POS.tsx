@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 type Product = {
   id: string;
@@ -32,8 +32,8 @@ export default function POS() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const filteredMenu = activeCategory === 'All items' 
-    ? MENU_ITEMS 
+  const filteredMenu = activeCategory === 'All items'
+    ? MENU_ITEMS
     : MENU_ITEMS.filter(item => item.category === activeCategory);
 
   const addToCart = (product: Product) => {
@@ -89,8 +89,8 @@ export default function POS() {
 
         <div className="pos-cats" style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px' }}>
           {CATEGORIES.map(cat => (
-            <div 
-              key={cat} 
+            <div
+              key={cat}
               className={`cat-pill ${activeCategory === cat ? 'active' : ''}`}
               onClick={() => setActiveCategory(cat)}
               style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}
@@ -117,7 +117,7 @@ export default function POS() {
           Current Order
           <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-3)' }}>Walk-in</span>
         </div>
-        
+
         <div className="cart-items">
           {cart.length === 0 ? (
             <div className="state-container" style={{ minHeight: '200px', height: '100%', padding: '20px' }}>
@@ -147,11 +147,11 @@ export default function POS() {
             <div className="cart-row"><span>Discount</span><span style={{ color: 'var(--green)' }}>−PKR 0</span></div>
             <div className="cart-row total"><span>Total</span><span>PKR {total}</span></div>
           </div>
-          
+
           <div className="pay-methods">
             {PAYMENT_METHODS.map(method => (
-              <div 
-                key={method} 
+              <div
+                key={method}
                 className={`pay-btn ${paymentMethod === method ? 'active' : ''}`}
                 onClick={() => setPaymentMethod(method)}
               >
@@ -159,12 +159,12 @@ export default function POS() {
               </div>
             ))}
           </div>
-          
-          <button 
-            className={`charge-btn ${isSuccess ? 'success' : ''}`} 
+
+          <button
+            className={`charge-btn ${isSuccess ? 'success' : ''}`}
             onClick={handleCharge}
             disabled={cart.length === 0 || isProcessing}
-            style={{ 
+            style={{
               opacity: cart.length === 0 ? 0.5 : 1,
               background: isSuccess ? 'var(--green)' : isProcessing ? 'var(--accent-glow)' : 'var(--accent)'
             }}

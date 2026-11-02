@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, ShoppingBag, Users, Calendar, ChefHat, Package, MenuSquare, LayoutGrid, Truck, CreditCard, Receipt, Calculator, UserCircle, Clock, CircleDollarSign, PieChart, Settings, Bell, FileText, ChevronRight } from 'lucide-react';
 

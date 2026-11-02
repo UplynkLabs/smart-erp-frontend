@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store, ChevronRight } from 'lucide-react';
 
@@ -21,12 +20,12 @@ export default function BranchSelection() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {branches.map(branch => (
-            <div 
-              key={branch.id} 
+            <div
+              key={branch.id}
               className={`panel-header ${!branch.active ? 'disabled' : ''}`}
-              style={{ 
-                border: '1px solid var(--border)', 
-                borderRadius: 'var(--radius)', 
+              style={{
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius)',
                 cursor: branch.active ? 'pointer' : 'not-allowed',
                 transition: 'border-color 0.2s',
                 opacity: branch.active ? 1 : 0.5

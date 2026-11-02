@@ -24,10 +24,10 @@ export default function Login() {
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Email</label>
-            <input 
-              type="email" 
-              className="form-input" 
-              placeholder="Enter your email" 
+            <input
+              type="email"
+              className="form-input"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -35,10 +35,10 @@ export default function Login() {
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Password</label>
-            <input 
-              type="password" 
-              className="form-input" 
-              placeholder="••••••••" 
+            <input
+              type="password"
+              className="form-input"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

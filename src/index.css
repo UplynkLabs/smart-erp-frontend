@@ -1027,7 +1027,7 @@
   .state-icon { font-size: 48px; margin-bottom: 20px; opacity: 0.8; }
   .state-title { font-family: var(--sans); font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
   .state-desc { font-size: 14px; color: var(--text-2); max-width: 400px; margin-bottom: 24px; }
-  
+
   /* ── DEMO CONTROLS ── */
   .demo-controls {
     position: fixed; bottom: 20px; right: 20px; z-index: 9999;
